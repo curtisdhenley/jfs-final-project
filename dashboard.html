@@ -15,8 +15,13 @@
     
     <main>
         <!-- banner -->
-        <section class="container">
-            <div id="banner" class="row justify-content-evenly banner border border-dark mt-5 p-3">
+        <div class="container">
+            <section id="the-team" class="row mt-5">
+                <div class="col">
+                    <h1>The Team</h1>
+                </div>
+            </section>
+            <section id="banner" class="row justify-content-evenly banner border border-dark mt-3 p-3">
                 <div class="col-md-3">
                     <img src="https://placeholder.pics/svg/150x150" alt="avatar img">
                 </div> <!-- col close -->
@@ -26,22 +31,44 @@
                 <div class="col-md-3">
                     <h2 class="pt-5">Rank/Position</h2>
                 </div> <!-- col close -->
-            </div> <!-- row close -->
+            </section> <!-- banner close -->
         
         <!-- team members -->
-            <div id="team-members" class="row">
+            <section id="team-member" class="row mt-5">
                 <div class="col">
-                    <!-- team members here -->
+                    <h2>Team Members</h2>
+                </div>
+            </section>
+            <section id="team-members-table" class="row text-center mt-3">
+                <div class="col-md-4">
+                    <table class="table table-hover table-bordered border-dark">
+                        <thead>
+                          <tr>
+                            <th scope="col">Avatar</th>
+                            <th scope="col">Username</th>
+                            <th scope="col">Rank/Position</th>
+                          </tr>
+                        </thead>
+                        <tbody>
+                          <tr>
+                              <td>
+                                  <img src="https://placeholder.pics/svg/50x50" alt="">
+                              </td>
+                            <td class="username">Stonk Daddy</td>
+                            <td class="rank-position">Captain</td>
+                          </tr>
+                        </tbody>
+                      </table>
                 </div> <!-- col close -->
-            </div> <!-- row close -->
+            </section> <!-- team members close -->
 
         <!-- portfolio snapshot -->
-            <div id="portfolio-snapshot" class="row">
+            <section id="portfolio-snapshot" class="row">
                 <div class="col">
                     <!-- portfolio snapshot here -->
                 </div> <!-- col close -->
-            </div> <!-- row close -->
-        </section>
+            </section> <!-- portfolio close -->
+        </div>
     </main>
 
     <footer></footer>
