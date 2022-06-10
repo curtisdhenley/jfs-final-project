@@ -20,18 +20,22 @@ class ItemsController {
         this._currentId = newValue;
     }
 
-    addItem(name, description, img, createdAt) {
+    addItem(symbol, price, updatedAt) {
         const id = this.currentId;
-        const itemObj = {id, name, description, img, createdAt}
+        const itemObj = {id, symbol, price, updatedAt}
         this.currentId++
         this.items.push(itemObj)
+    };
+
+    currentTime(){
+        const time = new Date();
+        return time;
     }
-};
+}
 
 const bob = new ItemsController();
 
+bob.addItem("appl", "1734.42", bob.currentTime());
 
-bob.addItem("Apple", "tech company", "abc", "now");
-
-bob.addItem("Microsoft", "tech company", "abc", "now");
+bob.addItem("msft", "23.71", bob.currentTime());
 console.log(bob.items);
