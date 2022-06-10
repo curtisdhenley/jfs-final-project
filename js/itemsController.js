@@ -1,19 +1,19 @@
 class ItemsController {
     constructor(currentId=0){
-        this._item = [];
+        this._items = [];
         this._currentId = currentId;
     }
 
-    get item(){
-        return this._item;
+    get items(){
+        return this._items;
     }
 
     get currentId() {
         return this._currentId;
     }
 
-    set item(newItem) {
-        this._item = newItem;
+    set items(newItem) {
+        this._items = newItem;
     }
 
     set currentId(newValue) {
@@ -21,8 +21,9 @@ class ItemsController {
     }
 
     addItem(name, description, img, createdAt) {
+        const itemObj = {name, description, img, createdAt}
         this.currentId++
-        this.item.push([name, description, img, createdAt])
+        this.items.push(itemObj)
     }
 };
 
@@ -30,4 +31,6 @@ const bob = new ItemsController();
 
 
 bob.addItem("Apple", "tech company", "abc", "now");
-console.log(bob.item);
+
+bob.addItem("Microsoft", "tech company", "abc", "now");
+console.log(bob.items);
