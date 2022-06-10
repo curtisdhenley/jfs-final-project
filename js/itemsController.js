@@ -38,4 +38,9 @@ const bob = new ItemsController();
 bob.addItem("appl", "1734.42", bob.currentTime());
 
 bob.addItem("msft", "23.71", bob.currentTime());
-console.log(bob.items);
+// console.log(bob.items[0]);
+
+localStorage.setItem("stocks", JSON.stringify(bob));
+// console.log(storage)
+
+// localStorage.setItem("ransom", "3");
