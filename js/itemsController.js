@@ -21,7 +21,7 @@ class ItemsController {
     }
 
     addItem(name, description, img, createdAt) {
-        const itemObj = {name, description, img, createdAt}
+        const itemObj = {symbol, price, updatedAt}
         this.currentId++
         this.items.push(itemObj)
     }
