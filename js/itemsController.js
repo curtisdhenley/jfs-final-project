@@ -20,9 +20,9 @@ class ItemsController {
         this._currentId = newValue;
     }
 
-    addItem(symbol, price, updatedAt) {
+    addItem(img, symbol, price, updatedAt) {
         const id = this.currentId;
-        const itemObj = {id, symbol, price, updatedAt}
+        const itemObj = {id, img, symbol, price, updatedAt}
         this.currentId++
         this.items.push(itemObj)
     };
@@ -35,9 +35,9 @@ class ItemsController {
 
 const bob = new ItemsController();
 
-bob.addItem("appl", "1734.42", bob.currentTime());
+bob.addItem("https://www.marketbeat.com/logos/apple-inc-logo.png", "appl", "1734.42", bob.currentTime());
 
-bob.addItem("msft", "23.71", bob.currentTime());
+bob.addItem("https://g.foolcdn.com/art/companylogos/mark/MSFT.png", "msft", "23.71", bob.currentTime());
 // console.log(bob.items[0]);
 
 localStorage.setItem("classID", JSON.stringify(bob.currentID));
