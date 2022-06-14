@@ -14,7 +14,7 @@ const addItemCards = () => {
 
   // console.log(stocksArr);
   // need to move var inside of loop
-  let newRow = document.createElement("tr");
+  // let newRow = document.createElement("tr");
   // newRow.innerHTML = `
   //       <th>Stock</th>
   //       <td>Symbol</td>
@@ -28,7 +28,7 @@ const addItemCards = () => {
 
     // listItem.appendChild(newDiv);
 
-    // let newRow = document.createElement("tr");
+    let newRow = document.createElement("tr");
     // newRow.setAttribute("data-id", gear[i].id);
     newRow.setAttribute("id", i);
     newRow.innerHTML += `
