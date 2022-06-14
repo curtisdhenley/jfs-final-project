@@ -1,49 +1,54 @@
-import {ItemsController} from "./itemsController.js"
+
+import { ItemsController } from "./itemsController.js";
 
 const jess = new ItemsController();
-
-
 
 let submitBtn = document.getElementById("submitBtn");
 let listItem = document.getElementById("list-items");
 
 // get array of stocks and display them
 const addItemCards = () => {
-    const stocksJSON = localStorage.getItem("stocks");
+  const stocksJSON = localStorage.getItem("stocks");
 
-    // if (stocksJSON) {
-      const stocksArr = JSON.parse(stocksJSON);
-  
-      console.log(stocksArr);
-  
-      for (let i = 0; i < stocksArr.length; i++) {
-        console.log(`i is ${i}`);
-        const newDiv = document.createElement("div");
-        newDiv.setAttribute("id", i);
+  // if (stocksJSON) {
+  const stocksArr = JSON.parse(stocksJSON);
 
-        listItem.appendChild(newDiv);
+  // console.log(stocksArr);
+  // need to move var inside of loop
+  // let newRow = document.createElement("tr");
+  // newRow.innerHTML = `
+  //       <th>Stock</th>
+  //       <td>Symbol</td>
+  //       <td>Price</td>
+  //     `;
+    
+  for (let i = 0; i < stocksArr.length; i++) {
+    console.log(`i is ${i}`);
+    // const newDiv = document.createElement("div");
+    // newDiv.setAttribute("id", i);
 
-        newDiv.innerHTML = `<br>
-            <div class="card" style="width: 18rem;">
-            <img src="${stocksArr[i].img}" class="card-img-top" alt="...">
-            <div class="card-body">
-              <h5 class="card-title">${stocksArr[i].symbol}</h5>
-              <p class="card-text">Latest price: ${stocksArr[i].price}</p>
-              <a href="#" class="btn btn-primary">Go somewhere</a>
-            </div>
-          </div>`;
-      }
-    // }
-  };
+    // listItem.appendChild(newDiv);
 
-  // may need to emulate following code
+    let newRow = document.createElement("tr");
+    // newRow.setAttribute("data-id", gear[i].id);
+    newRow.setAttribute("id", i);
+    newRow.innerHTML += `
+        <th scope="row"><img class="img-thumbnail" src="${stocksArr[i].img}" style="width: 50px;"></th>
+        <td>${stocksArr[i].symbol}</td>
+        <td>${stocksArr[i].price}</td>`;
+    // gearRowsTable.append(newRow);
+    listItem.appendChild(newRow);
+  }
+  // }
+};
+
+// may need to emulate following code
 //   if(localStorage.getItem("stocks")){
 //     jess.loadLocalStorage();
 //     addItemCards();
 //   }
 
 submitBtn.addEventListener("click", function (event) {
-
   event.preventDefault();
 
   let imgURL = document.getElementById("imgURL");
@@ -57,21 +62,19 @@ submitBtn.addEventListener("click", function (event) {
 
   // gearManager.setLocalStorage();
   localStorage.setItem("classID", JSON.stringify(jess.currentID));
-  localStorage.setItem("stocks", JSON.stringify(jess.items));  
+  localStorage.setItem("stocks", JSON.stringify(jess.items));
 
-//**** we need to come back ****
-// gearRows.innerHTML = '';
+  //**** we need to come back ****
+  // gearRows.innerHTML = '';
 
   // use our function instead of renderListFromLocal();
+  listItem.innerHTML = "";
   addItemCards();
 
   imgURL.value = "";
   symbol.value = "";
   price.value = "";
-  
 });
-
-
 
 // ***
 // instead of render list we'll render cards
@@ -95,4 +98,8 @@ submitBtn.addEventListener("click", function (event) {
 //   }
 // };
 
-
+// <thead>
+//         <td>Stock</td>
+//         <td>Symbol</td>
+//         <td>Price</td>
+//       </thead>
