@@ -1,3 +1,4 @@
+// need to set up export
 class ItemsController {
     constructor(currentId=0){
         this._items = [];
@@ -45,3 +46,5 @@ localStorage.setItem("stocks", JSON.stringify(bob.items));
 // console.log(storage)
 
 // localStorage.setItem("ransom", "3");
+
+export {ItemsController};

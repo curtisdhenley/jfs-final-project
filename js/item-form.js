@@ -1,12 +1,17 @@
+import {ItemsController} from "./itemsController.js"
+
 const jess = new ItemsController();
 
+
+
 let submitBtn = document.getElementById("submitBtn");
+let listItem = document.getElementById("list-items");
 
 // get array of stocks and display them
 const addItemCards = () => {
     const stocksJSON = localStorage.getItem("stocks");
-  
-    if (stocksJSON) {
+
+    // if (stocksJSON) {
       const stocksArr = JSON.parse(stocksJSON);
   
       console.log(stocksArr);
@@ -15,7 +20,9 @@ const addItemCards = () => {
         console.log(`i is ${i}`);
         const newDiv = document.createElement("div");
         newDiv.setAttribute("id", i);
+
         listItem.appendChild(newDiv);
+
         newDiv.innerHTML = `<br>
             <div class="card" style="width: 18rem;">
             <img src="${stocksArr[i].img}" class="card-img-top" alt="...">
@@ -26,13 +33,13 @@ const addItemCards = () => {
             </div>
           </div>`;
       }
-    }
+    // }
   };
 
   // may need to emulate following code
-//   if(localStorage.getItem("gear")){
-//     gearManager.loadLocalStorage();
-//     renderListFromLocal()
+//   if(localStorage.getItem("stocks")){
+//     jess.loadLocalStorage();
+//     addItemCards();
 //   }
 
 submitBtn.addEventListener("click", function (event) {
@@ -58,11 +65,10 @@ submitBtn.addEventListener("click", function (event) {
   // use our function instead of renderListFromLocal();
   addItemCards();
 
-  // deal these last four lines of code
-  gearPrice.value = "";
-  gearCategory.value = "";
-  gearType.value = "";
-  gearURL.value = "";
+  imgURL.value = "";
+  symbol.value = "";
+  price.value = "";
+  
 });
 
 
