@@ -32,7 +32,7 @@ const addItemCards = () => {
     // newRow.setAttribute("data-id", gear[i].id);
     newRow.setAttribute("id", i);
     newRow.innerHTML += `
-        <th scope="row"><img class="img-thumbnail" src="${stocksArr[i].img}" style="width: 50px;"></th>
+        <th scope="row"><img class="img-thumbnail" src="${stocksArr[i].img}" style="height: 50px;"></th>
         <td>${stocksArr[i].symbol}</td>
         <td>${stocksArr[i].price}</td>`;
     // gearRowsTable.append(newRow);
