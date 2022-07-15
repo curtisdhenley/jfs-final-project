@@ -9,8 +9,6 @@ let listItem = document.getElementById("list-items");
 
 // get array of stocks and display them
 const addItemCards = () => {
-
-  // change to get API sourced stock data
     const stocksJSON = localStorage.getItem("stocks");
 
     // if (stocksJSON) {
