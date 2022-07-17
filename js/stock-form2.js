@@ -6,8 +6,7 @@ let submitBtn = document.getElementById("submitBtn");
 let listItem = document.getElementById("list-items");
 let symbol = "Default symbol";
 let price = "Default price";
-let apiStockLogoUrl = "Default API Logo";
-let apiStockQuoteUrl = "Default API Quote";
+let apiCall = "Default API Call";
 
 // get array of stocks and display them
 const addItemCards = () => {
@@ -22,38 +21,14 @@ const addItemCards = () => {
     newRow.setAttribute("id", i);
     newRow.innerHTML += `
         <th scope="row"><img class="img-thumbnail" src="${stocksArr[i].img}" style="height: 50px;"></th>
-        <td>${stocksArr[i].symbol.toUpperCase()}</td>
+        <td>${stocksArr[i].symbol}</td>
         <td>${stocksArr[i].price}</td>`;
     listItem.appendChild(newRow);
   }
 };
 
-const makeRequest1 = async () => {
-  let response = await fetch(apiStockLogoUrl);
-
-  // if the response is bad
-  if (!response.ok) {
-    console.log(`${symbol.value} is not a valid ticker symbol`);
-    throw new Error(`There is an error with status ${response.status}`);
-  }
-  // console.log(response);
-  // console.log(Object.keys(response.json()));
-  // console.log(Object.keys(response.json()).length);
-  // const isEmpty = Object.keys(response).length === 0;
-  // if (Object.keys(response).length === 0) {
-  //   console.log(`${symbol.value} is not a valid ticker symbol`);
-  //   throw new Error(`There is an error with status ${response.status}`);
-  // }
-  if (response.status === 404) {
-    console.log(`${symbol.value} is not a valid ticker symbol`);
-    throw new Error(`There is an error with status ${response.status}`);
-  }
-  let usersJson = response.json();
-  return usersJson;
-};
-
-const makeRequest2 = async () => {
-  let response = await fetch(apiStockQuoteUrl);
+const makeRequest = async () => {
+  let response = await fetch(apiCall);
 
   // if the response is bad
   if (!response.ok) {
@@ -62,27 +37,10 @@ const makeRequest2 = async () => {
   let usersJson = response.json();
   return usersJson;
 };
-
-// const makeRequest = async () => {
-//   let stockLogo = await fetch(apiStockLogo);
-//   let stockQuote = await fetch(apiStockQuote);
-
-//   // if the response is bad
-//   if (!stockLogo.ok) {
-//     throw new Error(`There is an error with status ${stockLogo.status}`);
-//   }
-//   if (!stockQuote.ok) {
-//     throw new Error(`There is an error with status ${stockQuote.status}`);
-//   }
-//   const contentArr = [stockLogo.json(), stockQuote.json()];
-//   return contentArr;
-// };
 
 const renderStocks = async () => {
-  let apiStockLogo = await makeRequest1();
-  let apiStockQuote = await makeRequest2();
-console.log(apiStockLogo);
-console.log(apiStockQuote);
+  let stockOverview = await makeRequest();
+  console.log(stockOverview);
 
   /* TODO:
 1. take symbol and get stock details from API
@@ -94,12 +52,7 @@ console.log(apiStockQuote);
 
   // this is where we want to render Stocks
 
-  jess.addItem(
-    apiStockLogo.logo,
-    symbol.value,
-    apiStockQuote.c,
-    jess.currentTime()
-  );
+  jess.addItem(stockOverview.logo, symbol.value, price.value, jess.currentTime());
 
   // how to get the id
   // let stockArr = jess.items;
@@ -121,18 +74,12 @@ submitBtn.addEventListener("click", function (event) {
 
   symbol = document.getElementById("symbol");
   price = document.getElementById("price");
-  let apiSymbol = symbol.value.toUpperCase();
-  console.log(apiSymbol);
-
-  apiStockLogoUrl =
+  let apiSymbol = symbol.value;
+  
+  apiCall =
     "https://finnhub.io/api/v1/stock/profile2?symbol=" +
     apiSymbol +
     "&token=cb85mnqad3i6lui0sl0g";
-
-  apiStockQuoteUrl =
-  "https://finnhub.io/api/v1/quote?symbol=" +
-  apiSymbol +
-  "&token=cb85mnqad3i6lui0sl0g";
 
   // THIS IS WHERE WE CALL RENDER STOCKS
   renderStocks();
