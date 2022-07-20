@@ -99,6 +99,7 @@ console.log(apiStockQuote);
 
   // this is where we want to render Stocks
 
+  // Task #10 recommends <{adding a call to the uploadItem function inside the scope of addItem function}>
   jess.addItem(
     apiStockLogo.logo,
     symbol.value,
@@ -111,6 +112,25 @@ console.log(apiStockQuote);
   // console.log(stockArr[0],"++++++++++++++++");
 
   jess.setLocalStorage();
+
+
+
+  /* ================================================
+      Saving to the DB
+      {symbol.value, apiStockQuote.c, apiStockLogo.logo}
+     ================================================ */
+
+  // let dbStockObj = {nameForFirstName: symbol.value, priceForOwner: apiStockQuote.c, urlForAvatar: apiStockLogo.logo};
+  // let dbStockObj = {nameForFirstName: symbol.value, priceForAvatar: apiStockQuote.c};
+  let dbStockObj = {name: symbol.value.toUpperCase(), targetPrice: apiStockQuote.c};
+
+  // putting object in Heroku db
+  jess.save(dbStockObj);
+
+  // search Heroku db for stock by name
+  jess.findByName(dbStockObj.name);
+
+
 
   // use our function instead of renderListFromLocal();
   listItem.innerHTML = "";
