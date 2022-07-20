@@ -21,6 +21,7 @@ class StocksController {
     this._currentId = newValue;
   }
 
+  // Task #10 recommends <{adding a call to the uploadItem function inside the scope of addItem function}>
   addItem(img, symbol, price, updatedAt) {
     const id = this.currentId;
     const itemObj = { id, img, symbol, price, updatedAt };
@@ -50,6 +51,85 @@ class StocksController {
     // this.gearArray = JSON.parse(localStorage.getItem("gear"));
     // this.currentID = JSON.parse(localStorage.getItem("currentID"));
   }
+
+  // temporarily using Team TABLE for storage, ultimately to use Holding TABLE
+
+  //   save({nameForFirstName, priceForAvatar}){
+  //     const data = { name: nameForFirstName,  avatar: priceForAvatar };
+
+  //     fetch('https://peaceful-ocean-58466.herokuapp.com/team/add', {
+  //     method: 'POST', // or 'PUT'
+  //     headers: {
+  //         'Content-Type': 'application/json',
+  //     },
+  //     body: JSON.stringify(data),
+  //     })
+  //     .then(response => response.json())
+  //     .then(data => {
+  //     console.log('Success:', data);
+  //     })
+  //     .catch((error) => {
+  //     console.error('Error:', error);
+  //     });
+  // }
+  // }
+
+  // POST
+  save({ name, targetPrice }) {
+    const data = { name, targetPrice };
+
+    fetch("https://peaceful-ocean-58466.herokuapp.com/holding/add", {
+      method: "POST", // or 'PUT'
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(data),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        console.log("Success:", data);
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+      });
+  }
+
+  // GET
+  findByName = async (name) => {
+    let fetchURL = "https://peaceful-ocean-58466.herokuapp.com/holding/name?name=" + name;
+    let response = await fetch(fetchURL);
+    let stockJson = await response.json();
+    console.log("stockJson", stockJson);
+    // console.log(stockJson);
+    return stockJson;
+}
+
+/* ================================================
+      PUT
+      Our next area of focus once our API is upgraded
+     ================================================ */
+
+// PUT
+update({ name, targetPrice }) {
+  const data = { name, targetPrice };
+  let fetchURL = "https://peaceful-ocean-58466.herokuapp.com/holding/" + id;
+
+  fetch(fetchURL, {
+    method: "POST", // or 'PUT'
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log("Success:", data);
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+    });
+}
+
 }
 
 const bob = new StocksController();
