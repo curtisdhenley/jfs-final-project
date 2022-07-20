@@ -30,26 +30,31 @@ const addItemCards = () => {
 
 const makeRequest1 = async () => {
   let response = await fetch(apiStockLogoUrl);
+  let stockJson = response.json();
 
   // if the response is bad
   if (!response.ok) {
     console.log(`${symbol.value} is not a valid ticker symbol`);
     throw new Error(`There is an error with status ${response.status}`);
   }
-  // console.log(response);
-  // console.log(Object.keys(response.json()));
-  // console.log(Object.keys(response.json()).length);
-  // const isEmpty = Object.keys(response).length === 0;
-  // if (Object.keys(response).length === 0) {
-  //   console.log(`${symbol.value} is not a valid ticker symbol`);
-  //   throw new Error(`There is an error with status ${response.status}`);
-  // }
-  if (response.status === 404) {
+  console.log(stockJson);
+  console.log(Object.keys(stockJson));
+  console.log(Object.keys(stockJson).length);
+
+  const isEmpty = Object.keys(stockJson).length === 0;
+
+  // Object.keys(stockJson).length === 0
+  
+  if (stockJson.country == "") {
     console.log(`${symbol.value} is not a valid ticker symbol`);
-    throw new Error(`There is an error with status ${response.status}`);
+    throw new Error(`There is an error with status ${stockJson.status}`);
   }
-  let usersJson = response.json();
-  return usersJson;
+  // if (stockJson.status === 404) {
+  //   console.log(`${symbol.value} is not a valid ticker symbol`);
+  //   throw new Error(`There is an error with status ${stockJson.status}`);
+  // }
+  
+  return stockJson;
 };
 
 const makeRequest2 = async () => {
