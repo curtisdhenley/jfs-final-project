@@ -110,12 +110,42 @@ class StocksController {
      ================================================ */
 
 // PUT
-update({ name, targetPrice }) {
-  const data = { name, targetPrice };
+update({ id, name, targetPrice }) {
+  const data = { id, name, targetPrice };
   let fetchURL = "https://peaceful-ocean-58466.herokuapp.com/holding/" + id;
 
   fetch(fetchURL, {
-    method: "POST", // or 'PUT'
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(data),
+  })
+    .then((response) => response.json())
+    .then((data) => {
+      console.log("Success:", data);
+    })
+    .catch((error) => {
+      console.error("Error:", error);
+    });
+}
+
+// DELETE
+// delete = async (id) => {
+//   let fetchURL = "https://peaceful-ocean-58466.herokuapp.com/holding/" + id;
+//   let response = await fetch(fetchURL);
+//   let stockJson = await response.json();
+//   console.log("stockJson", stockJson);
+//   return stockJson;
+// }
+
+// DELETE
+delete({ id, name, targetPrice }) {
+  const data = { id, name, targetPrice };
+  let fetchURL = "https://peaceful-ocean-58466.herokuapp.com/holding/" + id;
+
+  fetch(fetchURL, {
+    method: "DELETE",
     headers: {
       "Content-Type": "application/json",
     },
