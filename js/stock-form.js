@@ -6,6 +6,8 @@ let submitBtn = document.getElementById("submitBtn");
 let listItem = document.getElementById("list-items");
 let symbol = "Default symbol";
 let price = "Default price";
+let quantity = "Default quantity";
+let holdingId = "Default holding ID";
 let apiStockLogoUrl = "Default API Logo";
 let apiStockQuoteUrl = "Default API Quote";
 
@@ -122,13 +124,28 @@ console.log(apiStockQuote);
 
   // let dbStockObj = {nameForFirstName: symbol.value, priceForOwner: apiStockQuote.c, urlForAvatar: apiStockLogo.logo};
   // let dbStockObj = {nameForFirstName: symbol.value, priceForAvatar: apiStockQuote.c};
-  let dbStockObj = {name: symbol.value.toUpperCase(), targetPrice: apiStockQuote.c};
 
-  // putting object in Heroku db
-  jess.save(dbStockObj);
+  // Content from Form
+  // symbol.value
+  // price.value
+  // quantity.value
+  // holdingId.value
 
-  // search Heroku db for stock by name
-  jess.findByName(dbStockObj.name);
+  let stockSaveObj = {name: symbol.value.toUpperCase(), targetPrice: apiStockQuote.c};
+
+  let stockUpdateObj = {id: holdingId.value, name: symbol.value.toUpperCase(), targetPrice: apiStockQuote.c};
+
+  // // putting object in Heroku db
+  // jess.save(stockSaveObj);
+
+  // // search Heroku db for stock by name
+  // jess.findByName(stockSaveObj.name);
+
+  // // update entry by id
+  // jess.update(stockUpdateObj);
+
+  // delete entry by id
+  jess.delete(stockUpdateObj);
 
 
 
@@ -146,6 +163,9 @@ submitBtn.addEventListener("click", function (event) {
 
   symbol = document.getElementById("symbol");
   price = document.getElementById("price");
+  quantity = document.getElementById("quantity");
+  holdingId = document.getElementById("holdingId");
+
   let apiSymbol = symbol.value.toUpperCase();
   console.log(apiSymbol);
 
