@@ -1,0 +1,242 @@
+// TODO: OLD code 
+import { UserController } from "./userController.js";
+
+const peterUserController = new UserController();
+
+const postBtn = document.getElementById("postBtn");
+const putBtn = document.getElementById("putBtn");
+const deleteBtn = document.getElementById("deleteBtn");
+
+const listItem = document.getElementById("list-items");
+
+const firstNameElement = document.getElementById("first-name");
+const lastNameElement = document.getElementById("last-name");
+const emailElement = document.getElementById("email");
+const avatarUrlElement = document.getElementById("avatar-url");
+
+// TODO: OLD code to remove
+// let symbol = "Default symbol";
+// let price = "Default price";
+// let quantity = "Default quantity";
+const userIdElement = document.getElementById("userId");
+
+let apiStockLogoUrl = "Default API Logo";
+let apiStockQuoteUrl = "Default API Quote";
+
+// get array of stocks and display them
+// const addItemCards = () => {
+//   const stocksJSON = localStorage.getItem("stocks");
+
+//   const stocksArr = JSON.parse(stocksJSON);
+//   // loop iterates through local storage and rebuilds html to make list of stocks
+//   for (let i = 0; i < stocksArr.length; i++) {
+//     console.log(`i is ${i}`);
+
+//     let newRow = document.createElement("tr");
+//     newRow.setAttribute("id", i);
+//     newRow.innerHTML += `
+//         <th scope="row"><img class="img-thumbnail" src="${stocksArr[i].img}" style="height: 50px;"></th>
+//         <td>${stocksArr[i].symbol.toUpperCase()}</td>
+//         <td>${stocksArr[i].price}</td>`;
+//     listItem.appendChild(newRow);
+//   }
+// };
+
+// 
+
+const displayUsers = () => {
+  // TODO: change stocks to users in controller
+  const userJson = localStorage.getItem("user"); 
+
+  const userArr = JSON.parse(userJson);
+  // loop iterates through local storage and rebuilds html to make list of stocks
+  for (let i = 0; i < userArr.length; i++) {
+    console.log(`i is ${i}`);
+
+    let newRow = document.createElement("tr");
+    newRow.setAttribute("id", i);
+    newRow.innerHTML += `
+        <th scope="row"><img class="img-thumbnail" src="${userArr[i].avatarUrlElement}" style="height: 50px;"></th>
+        <td>${userArr[i].firstNameElement}</td>
+        <td>${userArr[i].lastNameElement}</td>
+        <td>${userArr[i].emailElement}`;
+    listItem.appendChild(newRow);
+  }
+};
+
+const makeRequest1 = async () => {
+  let response = await fetch(apiStockLogoUrl);
+  let stockJson = response.json();
+
+  // if the response is bad
+  if (!response.ok) {
+    console.log(`${symbol.value} is not a valid ticker symbol`);
+    throw new Error(`There is an error with status ${response.status}`);
+  }
+  console.log(stockJson);
+  console.log(Object.keys(stockJson));
+  console.log(Object.keys(stockJson).length);
+
+  const isEmpty = Object.keys(stockJson).length === 0;
+  
+  if (stockJson.country == "") {
+    console.log(`${symbol.value} is not a valid ticker symbol`);
+    throw new Error(`There is an error with status ${stockJson.status}`);
+  }
+  
+  return stockJson;
+};
+
+const makeRequest2 = async () => {
+  let response = await fetch(apiStockQuoteUrl);
+
+  // if the response is bad
+  if (!response.ok) {
+    throw new Error(`There is an error with status ${response.status}`);
+  }
+  let usersJson = response.json();
+  return usersJson;
+};
+
+const renderUsers = async () => {
+// TODO: delete unused code
+//   let apiStockLogo = await makeRequest1();
+//   let apiStockQuote = await makeRequest2();
+// console.log(apiStockLogo);
+// console.log(apiStockQuote);
+
+  // this is where we want to render Stocks
+
+  // Task #10 recommends <{adding a call to the uploadItem function inside the scope of addItem function}>
+  peterUserController.addUser(
+    avatarUrlElement.value,
+    firstNameElement.value,
+    lastNameElement.value,
+    emailElement.value,
+    peterUserController.currentTime()
+  );
+
+  peterUserController.setLocalStorage();
+
+
+
+  /* ================================================
+      Saving to the DB
+      {symbol.value, apiStockQuote.c, apiStockLogo.logo}
+     ================================================ */
+
+
+  // let stockSaveObj = {name: symbol.value.toUpperCase(), targetPrice: apiStockQuote.c};
+  
+  // let stockUpdateObj = {id: holdingId.value, name: symbol.value.toUpperCase(), targetPrice: apiStockQuote.c};
+  // TODO: start here on Monday 
+  
+  let userSaveObj = {avatar: avatarUrlElement.value, email: emailElement.value, firstName: firstNameElement.value, lastName: lastNameElement.value};
+  let userUpdateObj = {id: userIdElement.value, avatar: avatarUrlElement.value, email: emailElement.value, firstName: firstNameElement.value, lastName: lastNameElement.value};
+
+
+  // putting object in Heroku db
+  // jess.save(stockSaveObj);
+
+  // search Heroku db for stock by name
+  peterUserController.findByName(stockSaveObj.name);
+
+  // update entry by id
+  peterUserController.update(stockUpdateObj);
+
+  // delete entry by id
+  // jess.delete(stockUpdateObj);
+
+
+
+  // use our function instead of renderListFromLocal();
+  listItem.innerHTML = "";
+  displayUsers();
+
+  symbol.value = "";
+  price.value = "";
+};
+
+const clearFormData = () => {
+  emailElement.value = "";
+  avatarUrlElement.value = "";
+  firstNameElement.value = "";
+  lastNameElement.value = "";
+}
+
+const postUser = async () => {
+  peterUserController.addUser(
+    avatarUrlElement.value,
+    firstNameElement.value,
+    lastNameElement.value,
+    emailElement.value,
+    peterUserController.currentTime()
+  );
+
+  peterUserController.setLocalStorage();
+  let userSaveObj = {avatar: avatarUrlElement.value, email: emailElement.value, firstName: firstNameElement.value, lastName: lastNameElement.value};
+  peterUserController.save(userSaveObj);
+
+  listItem.innerHTML = "";
+  displayUsers();
+  clearFormData();
+}
+
+const deleteUser = async () => {
+  peterUserController.addUser(
+    avatarUrlElement.value,
+    firstNameElement.value,
+    lastNameElement.value,
+    emailElement.value,
+    peterUserController.currentTime()
+  );
+
+  peterUserController.setLocalStorage();
+  let userSaveObj = {avatar: avatarUrlElement.value, email: emailElement.value, firstName: firstNameElement.value, lastName: lastNameElement.value};
+  peterUserController.save(userSaveObj);
+
+  listItem.innerHTML = "";
+  displayUsers();
+  clearFormData();
+}
+
+// deleteBtn
+// putBtn
+// userId
+// postBtn
+// ================================================
+// submitBtn.addEventListener("click", function (event) {
+//   event.preventDefault(); // related to action.php in stock-form.html?+++++++++++
+
+//   apiStockLogoUrl =
+//     "https://finnhub.io/api/v1/stock/profile2?symbol=" +
+//     apiSymbol +
+//     "&token=cb85mnqad3i6lui0sl0g";
+
+//   apiStockQuoteUrl =
+//   "https://finnhub.io/api/v1/quote?symbol=" +
+//   apiSymbol +
+//   "&token=cb85mnqad3i6lui0sl0g";
+
+//   // THIS IS WHERE WE CALL RENDER STOCKS
+//   renderUsers();
+// });
+
+postBtn.addEventListener("click", function (event) {
+  event.preventDefault(); // related to action.php in stock-form.html?+++++++++++
+
+  // apiStockLogoUrl =
+  //   "https://finnhub.io/api/v1/stock/profile2?symbol=" +
+  //   apiSymbol +
+  //   "&token=cb85mnqad3i6lui0sl0g";
+
+  // apiStockQuoteUrl =
+  // "https://finnhub.io/api/v1/quote?symbol=" +
+  // apiSymbol +
+  // "&token=cb85mnqad3i6lui0sl0g";
+
+  // THIS IS WHERE WE CALL RENDER STOCKS
+  postUser();
+
+});
+// submitBtn.addEventListener("click", renderCards());

@@ -135,17 +135,17 @@ console.log(apiStockQuote);
 
   let stockUpdateObj = {id: holdingId.value, name: symbol.value.toUpperCase(), targetPrice: apiStockQuote.c};
 
-  // // putting object in Heroku db
+  // putting object in Heroku db
   // jess.save(stockSaveObj);
 
-  // // search Heroku db for stock by name
-  // jess.findByName(stockSaveObj.name);
+  // search Heroku db for stock by name
+  jess.findByName(stockSaveObj.name);
 
-  // // update entry by id
-  // jess.update(stockUpdateObj);
+  // update entry by id
+  jess.update(stockUpdateObj);
 
   // delete entry by id
-  jess.delete(stockUpdateObj);
+  // jess.delete(stockUpdateObj);
 
 
 
