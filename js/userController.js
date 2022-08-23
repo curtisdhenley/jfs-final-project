@@ -51,7 +51,7 @@ class UserController {
 save({ name, targetPrice }) {
   const data = { name, targetPrice };
 
-  fetch("https://peaceful-ocean-58466.herokuapp.com/holding/add", {
+  fetch("https://peaceful-ocean-58466.herokuapp.com/user/add", {
     method: "POST", // or 'PUT'
     headers: {
       "Content-Type": "application/json",
@@ -67,8 +67,9 @@ save({ name, targetPrice }) {
     });
 }
 
-save({ firstName, lastName, email, avatarUrl }) {
-  const data = { firstName, lastName, email, avatarUrl };
+save({ firstName, lastName, email, avatar }) {
+  console.log(` avatar URL: ${avatar}`);
+  const data = { firstName, lastName, email, avatar };
 
   fetch("https://peaceful-ocean-58466.herokuapp.com/user/add", {
     method: "POST", // or 'PUT'
@@ -87,7 +88,7 @@ save({ firstName, lastName, email, avatarUrl }) {
 }
   // GET
 findByName = async (name) => {
-    let fetchURL = "https://peaceful-ocean-58466.herokuapp.com/holding/name?name=" + name;
+    let fetchURL = "https://peaceful-ocean-58466.herokuapp.com/user/name?name=" + name;
     let response = await fetch(fetchURL);
     let stockJson = await response.json();
     console.log("stockJson", stockJson);
@@ -103,7 +104,7 @@ findByName = async (name) => {
 // PUT
 update({ id, name, targetPrice }) {
   const data = { id, name, targetPrice };
-  let fetchURL = "https://peaceful-ocean-58466.herokuapp.com/holding/" + id;
+  let fetchURL = "https://peaceful-ocean-58466.herokuapp.com/user/" + id;
 
   fetch(fetchURL, {
     method: "PUT",
@@ -122,9 +123,10 @@ update({ id, name, targetPrice }) {
 }
 
 // DELETE
-delete({ id, name, targetPrice }) {
-  const data = { id, name, targetPrice };
-  let fetchURL = "https://peaceful-ocean-58466.herokuapp.com/holding/" + id;
+delete( id ) {
+  const data = { id };
+  console.log(id);
+  let fetchURL = "https://peaceful-ocean-58466.herokuapp.com/user/" + id;
 
   fetch(fetchURL, {
     method: "DELETE",

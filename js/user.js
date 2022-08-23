@@ -14,6 +14,11 @@ const lastNameElement = document.getElementById("last-name");
 const emailElement = document.getElementById("email");
 const avatarUrlElement = document.getElementById("avatar-url");
 
+const email = emailElement.value;
+const firstName = firstNameElement.value;
+const lastName = lastNameElement.value;
+const avatarUrl = avatarUrlElement.value;
+
 // TODO: OLD code to remove
 // let symbol = "Default symbol";
 // let price = "Default price";
@@ -56,10 +61,10 @@ const displayUsers = () => {
     let newRow = document.createElement("tr");
     newRow.setAttribute("id", i);
     newRow.innerHTML += `
-        <th scope="row"><img class="img-thumbnail" src="${userArr[i].avatarUrlElement}" style="height: 50px;"></th>
-        <td>${userArr[i].firstNameElement}</td>
-        <td>${userArr[i].lastNameElement}</td>
-        <td>${userArr[i].emailElement}`;
+        <th scope="row"><img class="img-thumbnail" src="${userArr[i].avatarUrl}" style="height: 50px;"></th>
+        <td>${userArr[i].firstName}</td>
+        <td>${userArr[i].lastName}</td>
+        <td>${userArr[i].email}`;
     listItem.appendChild(newRow);
   }
 };
@@ -164,6 +169,7 @@ const clearFormData = () => {
   lastNameElement.value = "";
 }
 
+// SAVE USER to database
 const postUser = async () => {
   peterUserController.addUser(
     avatarUrlElement.value,
@@ -175,7 +181,9 @@ const postUser = async () => {
 
   peterUserController.setLocalStorage();
   let userSaveObj = {avatar: avatarUrlElement.value, email: emailElement.value, firstName: firstNameElement.value, lastName: lastNameElement.value};
+  console.log(userSaveObj.avatar);
   peterUserController.save(userSaveObj);
+  console.log(userSaveObj);
 
   listItem.innerHTML = "";
   displayUsers();
@@ -192,8 +200,10 @@ const deleteUser = async () => {
   );
 
   peterUserController.setLocalStorage();
-  let userSaveObj = {avatar: avatarUrlElement.value, email: emailElement.value, firstName: firstNameElement.value, lastName: lastNameElement.value};
-  peterUserController.save(userSaveObj);
+  let userDeleteObj = {id: userIdElement.value, avatar: avatarUrlElement.value, email: emailElement.value, firstName: firstNameElement.value, lastName: lastNameElement.value};
+  console.log(`userUpdateObj ID: ${userDeleteObj.id}`);
+  const userToDeleteId = userDeleteObj.id;
+  peterUserController.delete(userToDeleteId);
 
   listItem.innerHTML = "";
   displayUsers();
@@ -238,5 +248,10 @@ postBtn.addEventListener("click", function (event) {
   // THIS IS WHERE WE CALL RENDER STOCKS
   postUser();
 
+});
+
+deleteBtn.addEventListener("click", function (e) {
+  e.preventDefault();
+  deleteUser();
 });
 // submitBtn.addEventListener("click", renderCards());
