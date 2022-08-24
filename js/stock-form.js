@@ -139,7 +139,7 @@ console.log(apiStockQuote);
   // jess.save(stockSaveObj);
 
   // search Heroku db for stock by name
-  jess.findByName(stockSaveObj.name);
+  // jess.findByName(stockSaveObj.name);
 
   // update entry by id
   jess.update(stockUpdateObj);

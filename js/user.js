@@ -123,8 +123,6 @@ const renderUsers = async () => {
 
   peterUserController.setLocalStorage();
 
-
-
   /* ================================================
       Saving to the DB
       {symbol.value, apiStockQuote.c, apiStockLogo.logo}
@@ -138,8 +136,6 @@ const renderUsers = async () => {
   
   let userSaveObj = {avatar: avatarUrlElement.value, email: emailElement.value, firstName: firstNameElement.value, lastName: lastNameElement.value};
   let userUpdateObj = {id: userIdElement.value, avatar: avatarUrlElement.value, email: emailElement.value, firstName: firstNameElement.value, lastName: lastNameElement.value};
-
-
   // putting object in Heroku db
   // jess.save(stockSaveObj);
 
@@ -152,8 +148,6 @@ const renderUsers = async () => {
   // delete entry by id
   // jess.delete(stockUpdateObj);
 
-
-
   // use our function instead of renderListFromLocal();
   listItem.innerHTML = "";
   displayUsers();
@@ -161,6 +155,16 @@ const renderUsers = async () => {
   symbol.value = "";
   price.value = "";
 };
+
+const addUserToLocalStorage = () => {
+  peterUserController.addUser(
+    avatarUrlElement.value,
+    firstNameElement.value,
+    lastNameElement.value,
+    emailElement.value,
+    peterUserController.currentTime()
+  );
+}
 
 const clearFormData = () => {
   emailElement.value = "";
@@ -171,14 +175,7 @@ const clearFormData = () => {
 
 // SAVE USER to database
 const postUser = async () => {
-  peterUserController.addUser(
-    avatarUrlElement.value,
-    firstNameElement.value,
-    lastNameElement.value,
-    emailElement.value,
-    peterUserController.currentTime()
-  );
-
+  addUserToLocalStorage();
   peterUserController.setLocalStorage();
   let userSaveObj = {avatar: avatarUrlElement.value, email: emailElement.value, firstName: firstNameElement.value, lastName: lastNameElement.value};
   console.log(userSaveObj.avatar);
@@ -191,6 +188,18 @@ const postUser = async () => {
 }
 
 const deleteUser = async () => {
+  peterUserController.setLocalStorage();
+  let userDeleteObj = {id: userIdElement.value, avatar: avatarUrlElement.value, email: emailElement.value, firstName: firstNameElement.value, lastName: lastNameElement.value};
+  console.log(`userUpdateObj ID: ${userDeleteObj.id}`);
+  const userToDeleteId = userDeleteObj.id;
+  peterUserController.delete(userToDeleteId);
+
+  listItem.innerHTML = "";
+  displayUsers();
+  clearFormData();
+}
+
+const putUser = () => {
   peterUserController.addUser(
     avatarUrlElement.value,
     firstNameElement.value,
@@ -200,10 +209,11 @@ const deleteUser = async () => {
   );
 
   peterUserController.setLocalStorage();
-  let userDeleteObj = {id: userIdElement.value, avatar: avatarUrlElement.value, email: emailElement.value, firstName: firstNameElement.value, lastName: lastNameElement.value};
-  console.log(`userUpdateObj ID: ${userDeleteObj.id}`);
-  const userToDeleteId = userDeleteObj.id;
-  peterUserController.delete(userToDeleteId);
+  // email, firstName, lastName, avatar, id 
+  let userUpdateObj = { email: emailElement.value, firstName: firstNameElement.value, lastName: lastNameElement.value, avatar: avatarUrlElement.value, id: userIdElement.value};
+  console.log(`user update obj: ${userUpdateObj}`);
+  peterUserController.update(userUpdateObj);
+  console.log(userUpdateObj);
 
   listItem.innerHTML = "";
   displayUsers();
@@ -248,6 +258,11 @@ postBtn.addEventListener("click", function (event) {
   // THIS IS WHERE WE CALL RENDER STOCKS
   postUser();
 
+});
+
+putBtn.addEventListener("click", function (e) {
+  e.preventDefault();
+  putUser();
 });
 
 deleteBtn.addEventListener("click", function (e) {

@@ -101,9 +101,16 @@ findByName = async (name) => {
       Our next area of focus once our API is upgraded
      ================================================ */
 
+
+  //    {
+  //     "email": "email@email.com",
+  //     "firstName": "John",
+  //     "lastName": "Garner",
+  //     "avatar": "images.com/001"
+  // }
 // PUT
-update({ id, name, targetPrice }) {
-  const data = { id, name, targetPrice };
+update({ email, firstName, lastName, avatar, id }) {
+  const data = { id, firstName, lastName, email, avatar };
   let fetchURL = "https://peaceful-ocean-58466.herokuapp.com/user/" + id;
 
   fetch(fetchURL, {
