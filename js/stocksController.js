@@ -94,7 +94,17 @@ class StocksController {
       });
   }
 
-  // GET
+  // GET all
+  findAll = async () => {
+    let fetchURL = "https://peaceful-ocean-58466.herokuapp.com/holding";
+    let response = await fetch(fetchURL);
+    let stockJson = await response.json();
+    console.log("stockJson", stockJson);
+    // console.log(stockJson);
+    return stockJson;
+}
+
+  // GET By Name
   findByName = async (name) => {
     let fetchURL = "https://peaceful-ocean-58466.herokuapp.com/holding/name?name=" + name;
     let response = await fetch(fetchURL);
@@ -160,7 +170,7 @@ delete({ id, name, targetPrice }) {
     });
 }
 
-}
+} // does this need to be deleted, no closes controller
 
 const bob = new StocksController();
 
