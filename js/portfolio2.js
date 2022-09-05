@@ -89,8 +89,8 @@ targetPrice: 23.9201
 
     let stocksDbName = stocksDbArr[i].name;
     let stocksDbTargetPrice = stocksDbArr[i].targetPrice;
-    // console.log(`stocksDbName is ${stocksDbName}`);
-    // console.log(`stocksDbTargetPrice is ${stocksDbTargetPrice}`);
+    console.log(`stocksDbName is ${stocksDbName}`);
+    console.log(`stocksDbTargetPrice is ${stocksDbTargetPrice}`);
 
     let apiStockLogoUrlRequest =
       "https://finnhub.io/api/v1/stock/profile2?symbol=" +
@@ -133,6 +133,20 @@ targetPrice: 23.9201
 
 /* ================================================ */
 
+const getIpAddress = async () => {
+  let ip = document.getElementById("ip").value;
+  let request = `https://geo.ipify.org/api/v2/country,city?apiKey=at_lyEpJjRAahG87s8BMrWadFehAGIyg&ipAddress=${ip}`;
+
+  let response = await fetch(request);
+  if (!response.ok) {
+      throw Error(`There is an error with status ${response.status}`);
+  }
+  let ipAddress = await response.json();
+  return ipAddress;
+};
+
+/* ================================================ */
+
 const makeRequest1 = async () => {
   console.log(`post >> makeRequest1`);
   let response = await fetch(apiStockLogoUrl);
@@ -144,12 +158,23 @@ const makeRequest1 = async () => {
     throw new Error(`There is an error with status ${response.status}`);
   }
 
+  // check makeRequest
+  // console.log(stockJson);
+  // console.log(Object.keys(stockJson));
+  // console.log(Object.keys(stockJson).length);
+
   const isEmpty = Object.keys(stockJson).length === 0;
+
+  // Object.keys(stockJson).length === 0
 
   if (stockJson.country == "") {
     console.log(`${symbol.value} is not a valid ticker symbol`);
     throw new Error(`There is an error with status ${stockJson.status}`);
   }
+  // if (stockJson.status === 404) {
+  //   console.log(`${symbol.value} is not a valid ticker symbol`);
+  //   throw new Error(`There is an error with status ${stockJson.status}`);
+  // }
 
   return stockJson;
 };
@@ -165,6 +190,92 @@ const makeRequest2 = async () => {
   return usersJson;
 };
 
+// VVV we need to get rid of renderStocks VVV
+const renderStocks = async () => {
+  let apiStockLogo = await makeRequest1();
+  let apiStockQuote = await makeRequest2();
+  console.log(apiStockLogo);
+  console.log(apiStockQuote);
+
+  /* TODO:
+      1. take symbol and get stock details from API
+      2. get rid of imgURL in form
+      3. take data from API and .addItem() instance of StocksController
+*/
+
+  // this is where we want to render Stocks
+
+  // Task #10 recommends <{adding a call to the uploadItem function inside the scope of addItem function}>
+  jess.addItem(
+    apiStockLogo.logo,
+    symbol.value,
+    apiStockQuote.c,
+    jess.currentTime()
+  );
+
+  jess.setLocalStorage();
+
+  /* ================================================
+      Saving to the DB
+      {symbol.value, apiStockQuote.c, apiStockLogo.logo}
+     ================================================ */
+
+  let stockSaveObj = {
+    name: symbol.value.toUpperCase(),
+    targetPrice: apiStockQuote.c,
+  };
+
+  let stockUpdateObj = {
+    id: holdingId.value,
+    name: symbol.value.toUpperCase(),
+    targetPrice: apiStockQuote.c,
+  };
+
+  // putting object in Heroku db
+  jess.save(stockSaveObj);
+
+  // search Heroku db for stock by name
+  jess.findByName(stockSaveObj.name);
+
+  // update entry by id
+  jess.update(stockUpdateObj);
+
+  // delete entry by id
+  // jess.delete(stockUpdateObj);
+
+  // use our function instead of renderListFromLocal();
+  listItem.innerHTML = "";
+  addItemCards();
+
+  symbol.value = "";
+  price.value = "";
+};
+
+// ================================================
+submitBtn.addEventListener("click", function (event) {
+  event.preventDefault(); // related to action.php in stock-form.html?+++++++++++
+
+  symbol = document.getElementById("symbol");
+  price = document.getElementById("price");
+  quantity = document.getElementById("quantity");
+  holdingId = document.getElementById("holdingId");
+
+  let apiSymbol = symbol.value.toUpperCase();
+  console.log(apiSymbol);
+
+  apiStockLogoUrl =
+    "https://finnhub.io/api/v1/stock/profile2?symbol=" +
+    apiSymbol +
+    "&token=cb85mnqad3i6lui0sl0g";
+
+  apiStockQuoteUrl =
+    "https://finnhub.io/api/v1/quote?symbol=" +
+    apiSymbol +
+    "&token=cb85mnqad3i6lui0sl0g";
+
+  // THIS IS WHERE WE CALL RENDER STOCKS
+  renderStocks();
+});
 
 /* ================================================
     Post Stocks
@@ -210,7 +321,7 @@ const postStocks = async () => {
   // displayStocks();
 
   // delayed
-  setTimeout(() => { displayStocks(); }, 1000);
+  setTimeout(() => { displayStocks(); }, 5000);
 
   symbol.value = "";
   price.value = "";
@@ -249,26 +360,22 @@ postBtn.addEventListener("click", function (event) {
 const putStocks = async () => {
   let apiStockLogo = await makeRequest1();
   let apiStockQuote = await makeRequest2();
-  // console.log(apiStockLogo);
-  // console.log(apiStockQuote);
+  console.log(apiStockLogo);
+  console.log(apiStockQuote);
 
-  // jess.addItem(
-  //   apiStockLogo.logo,
-  //   symbol.value,
-  //   apiStockQuote.c,
-  //   jess.currentTime()
-  // );
-
-  console.log(`apiStockLogo.logo ${apiStockLogo.logo}`);
-  console.log(`symbol.value ${symbol.value}`);
-  console.log(`apiStockQuote.c ${apiStockQuote.c}`);
+  jess.addItem(
+    apiStockLogo.logo,
+    symbol.value,
+    apiStockQuote.c,
+    jess.currentTime()
+  );
 
   jess.setLocalStorage();
 
   let stockUpdateObj = {
     id: holdingId.value,
     name: symbol.value.toUpperCase(),
-    targetPrice: price.value,
+    targetPrice: apiStockQuote.c,
   };
 
   // update entry by id
@@ -277,11 +384,9 @@ const putStocks = async () => {
   // use our function instead of renderListFromLocal();
   listItem.innerHTML = "";
 
-  // normal
-  // displayStocks();
-
-  // delayed
-  setTimeout(() => { displayStocks(); }, 1000);
+  // old print to screen
+  // addItemCards();
+  displayStocks();
 
   symbol.value = "";
   price.value = "";
@@ -457,6 +562,13 @@ const deleteStocks = async () => {
   console.log(apiStockLogo);
   console.log(apiStockQuote);
 
+  // jess.addItem(
+  //   apiStockLogo.logo,
+  //   symbol.value,
+  //   apiStockQuote.c,
+  //   jess.currentTime()
+  // );
+
   jess.setLocalStorage();
 
   let stockDeleteObj = {
@@ -488,7 +600,19 @@ deleteBtn.addEventListener("click", function (event) {
   quantity = document.getElementById("quantity");
   holdingId = document.getElementById("holdingId");
 
-  // THIS IS WHERE WE CALL deleteStocks
+  // let apiSymbol = symbol.value.toUpperCase();
+  // console.log(apiSymbol);
 
+  // apiStockLogoUrl =
+  //   "https://finnhub.io/api/v1/stock/profile2?symbol=" +
+  //   apiSymbol +
+  //   "&token=cb85mnqad3i6lui0sl0g";
+
+  // apiStockQuoteUrl =
+  // "https://finnhub.io/api/v1/quote?symbol=" +
+  // apiSymbol +
+  // "&token=cb85mnqad3i6lui0sl0g";
+
+  // THIS IS WHERE WE CALL postStocks
   deleteStocks();
 });
