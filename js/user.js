@@ -19,35 +19,11 @@ const firstName = firstNameElement.value;
 const lastName = lastNameElement.value;
 const avatarUrl = avatarUrlElement.value;
 
-// TODO: OLD code to remove
-// let symbol = "Default symbol";
-// let price = "Default price";
-// let quantity = "Default quantity";
 const userIdElement = document.getElementById("userId");
 
 let apiStockLogoUrl = "Default API Logo";
 let apiStockQuoteUrl = "Default API Quote";
 
-// get array of stocks and display them
-// const addItemCards = () => {
-//   const stocksJSON = localStorage.getItem("stocks");
-
-//   const stocksArr = JSON.parse(stocksJSON);
-//   // loop iterates through local storage and rebuilds html to make list of stocks
-//   for (let i = 0; i < stocksArr.length; i++) {
-//     console.log(`i is ${i}`);
-
-//     let newRow = document.createElement("tr");
-//     newRow.setAttribute("id", i);
-//     newRow.innerHTML += `
-//         <th scope="row"><img class="img-thumbnail" src="${stocksArr[i].img}" style="height: 50px;"></th>
-//         <td>${stocksArr[i].symbol.toUpperCase()}</td>
-//         <td>${stocksArr[i].price}</td>`;
-//     listItem.appendChild(newRow);
-//   }
-// };
-
-// 
 
 const displayUsers = () => {
   // TODO: change stocks to users in controller
@@ -104,13 +80,6 @@ const makeRequest2 = async () => {
 };
 
 const renderUsers = async () => {
-// TODO: delete unused code
-//   let apiStockLogo = await makeRequest1();
-//   let apiStockQuote = await makeRequest2();
-// console.log(apiStockLogo);
-// console.log(apiStockQuote);
-
-  // this is where we want to render Stocks
 
   // Task #10 recommends <{adding a call to the uploadItem function inside the scope of addItem function}>
   peterUserController.addUser(
@@ -127,12 +96,6 @@ const renderUsers = async () => {
       Saving to the DB
       {symbol.value, apiStockQuote.c, apiStockLogo.logo}
      ================================================ */
-
-
-  // let stockSaveObj = {name: symbol.value.toUpperCase(), targetPrice: apiStockQuote.c};
-  
-  // let stockUpdateObj = {id: holdingId.value, name: symbol.value.toUpperCase(), targetPrice: apiStockQuote.c};
-  // TODO: start here on Monday 
   
   let userSaveObj = {avatar: avatarUrlElement.value, email: emailElement.value, firstName: firstNameElement.value, lastName: lastNameElement.value};
   let userUpdateObj = {id: userIdElement.value, avatar: avatarUrlElement.value, email: emailElement.value, firstName: firstNameElement.value, lastName: lastNameElement.value};
@@ -220,6 +183,37 @@ const putUser = () => {
   clearFormData();
 }
 
+const getUserByLastName = () => {
+  const lastName = lastNameElement.value;
+  peterUserController.findByLastName(lastName);
+  console.log(lastName);
+  // console log from findByLastName will display list of users with same last name in console
+}
+
+// const getByNameStocks = async () => {
+//   let apiStockLogo = await makeRequest1();
+//   let apiStockQuote = await makeRequest2();
+//   console.log(apiStockLogo);
+//   console.log(apiStockQuote);
+
+//   jess.addItem(
+//     apiStockLogo.logo,
+//     symbol.value,
+//     apiStockQuote.c,
+//     jess.currentTime()
+//   );
+
+  // search Heroku db for stock by name
+  // jess.findByName(stockSaveObj.name);
+
+  // use our function instead of renderListFromLocal();
+//   listItem.innerHTML = "";
+//   addItemCards();
+
+//   symbol.value = "";
+//   price.value = "";
+// };
+
 // deleteBtn
 // putBtn
 // userId
@@ -243,21 +237,8 @@ const putUser = () => {
 // });
 
 postBtn.addEventListener("click", function (event) {
-  event.preventDefault(); // related to action.php in stock-form.html?+++++++++++
-
-  // apiStockLogoUrl =
-  //   "https://finnhub.io/api/v1/stock/profile2?symbol=" +
-  //   apiSymbol +
-  //   "&token=cb85mnqad3i6lui0sl0g";
-
-  // apiStockQuoteUrl =
-  // "https://finnhub.io/api/v1/quote?symbol=" +
-  // apiSymbol +
-  // "&token=cb85mnqad3i6lui0sl0g";
-
-  // THIS IS WHERE WE CALL RENDER STOCKS
+  event.preventDefault(); 
   postUser();
-
 });
 
 putBtn.addEventListener("click", function (e) {
@@ -269,4 +250,9 @@ deleteBtn.addEventListener("click", function (e) {
   e.preventDefault();
   deleteUser();
 });
+
+findLastNameBtn.addEventListener("click", function (e) {
+  e.preventDefault();
+  getUserByLastName();
+})
 // submitBtn.addEventListener("click", renderCards());

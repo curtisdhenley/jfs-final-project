@@ -48,24 +48,24 @@ class UserController {
   }
 
   // POST
-save({ name, targetPrice }) {
-  const data = { name, targetPrice };
+// save({ name, targetPrice }) {
+//   const data = { name, targetPrice };
 
-  fetch("https://peaceful-ocean-58466.herokuapp.com/user/add", {
-    method: "POST", // or 'PUT'
-    headers: {
-      "Content-Type": "application/json",
-    },
-    body: JSON.stringify(data),
-  })
-    .then((response) => response.json())
-    .then((data) => {
-      console.log("Success:", data);
-    })
-    .catch((error) => {
-      console.error("Error:", error);
-    });
-}
+//   fetch("https://peaceful-ocean-58466.herokuapp.com/user/add", {
+//     method: "POST", // or 'PUT'
+//     headers: {
+//       "Content-Type": "application/json",
+//     },
+//     body: JSON.stringify(data),
+//   })
+//     .then((response) => response.json())
+//     .then((data) => {
+//       console.log("Success:", data);
+//     })
+//     .catch((error) => {
+//       console.error("Error:", error);
+//     });
+// }
 
 save({ firstName, lastName, email, avatar }) {
   console.log(` avatar URL: ${avatar}`);
@@ -87,13 +87,21 @@ save({ firstName, lastName, email, avatar }) {
     });
 }
   // GET
-findByName = async (name) => {
-    let fetchURL = "https://peaceful-ocean-58466.herokuapp.com/user/name?name=" + name;
+findByLastName = async (name) => {
+    let fetchURL = "https://peaceful-ocean-58466.herokuapp.com/user/lastname?lastname=" + name;
     let response = await fetch(fetchURL);
-    let stockJson = await response.json();
-    console.log("stockJson", stockJson);
-    // console.log(stockJson);
-    return stockJson;
+    let lastNameList = await response.json();
+    console.log("last name list", lastNameList);
+    return lastNameList;
+}
+
+findByFirstName = async (name) => {
+  let fetchURL = "https://peaceful-ocean-58466.herokuapp.com/user/name?name=" + name;
+  let response = await fetch(fetchURL);
+  let stockJson = await response.json();
+  console.log("stockJson", stockJson);
+  // console.log(stockJson);
+  return stockJson;
 }
 
 /* ================================================
