@@ -9,7 +9,7 @@
 
 // 2> using get all on an empty DB breaks the system, case must be prevented
 
-import { StocksController } from "./stocksController.js";
+import { StocksController } from "../js/stocksController.js";
 
 const jess = new StocksController();
 

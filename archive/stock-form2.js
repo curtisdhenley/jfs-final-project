@@ -1,4 +1,4 @@
-import { StocksController } from "./stocksController.js";
+import { StocksController } from "../js/stocksController.js";
 
 const jess = new StocksController();
 

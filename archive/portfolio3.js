@@ -9,7 +9,7 @@
 
 // 2> using get all on an empty DB breaks the system, case must be prevented
 
-import { StocksController } from "./stocksController.js";
+import { StocksController } from "../js/stocksController.js";
 
 const jess = new StocksController();
 
@@ -18,7 +18,6 @@ let postBtn = document.getElementById("postBtn");
 let putBtn = document.getElementById("putBtn");
 let getByNameBtn = document.getElementById("getByNameBtn");
 let getAllBtn = document.getElementById("getAllBtn");
-let deleteByIdBtn = document.getElementById("deleteByIdBtn");
 let listItem = document.getElementById("list-items");
 let symbol = "Default symbol";
 let price = "Default price";
@@ -27,9 +26,35 @@ let holdingId = "Default holding ID";
 let apiStockLogoUrl = "Default API Logo";
 let apiStockQuoteUrl = "Default API Quote";
 
+/* ================================================
+    Old  Print Method
+   ================================================ */
+
+// how do names of items in local storage differ from those in DB
+
+// get array of stocks and display them
+const addItemCards = () => {
+  const stocksJSON = localStorage.getItem("stocks");
+
+  const stocksArr = JSON.parse(stocksJSON);
+  // loop iterates through local storage and rebuilds html to make list of stocks
+  for (let i = 0; i < stocksArr.length; i++) {
+    console.log(`i is ${i}`);
+
+    let newRow = document.createElement("tr");
+    newRow.setAttribute("id", i);
+    newRow.innerHTML += `
+        <th scope="row"><img class="img-thumbnail" src="${
+          stocksArr[i].img
+        }" style="height: 50px;"></th>
+        <td>${stocksArr[i].symbol.toUpperCase()}</td>
+        <td>${stocksArr[i].price}</td>`;
+    listItem.appendChild(newRow);
+  }
+};
 
 /* ================================================
-    Display Stocks in Table Method
+    New Print Method
    ================================================ */
 
 // ****** we need to do 3rd party API calls for innerHTML
@@ -60,9 +85,12 @@ targetPrice: 23.9201
 
   // loop iterates through array of stocks returned from database
   for (let i = 0; i < stocksDbArr.length; i++) {
+    // console.log(`i is ${i}`);
 
     let stocksDbName = stocksDbArr[i].name;
     let stocksDbTargetPrice = stocksDbArr[i].targetPrice;
+    // console.log(`stocksDbName is ${stocksDbName}`);
+    // console.log(`stocksDbTargetPrice is ${stocksDbTargetPrice}`);
 
     let apiStockLogoUrlRequest =
       "https://finnhub.io/api/v1/stock/profile2?symbol=" +
@@ -79,6 +107,9 @@ targetPrice: 23.9201
     let apiStockQuoteUrlResponse = await fetch(apiStockQuoteUrlRequest);
 
     let apiStockQuoteUrl = await apiStockQuoteUrlResponse.json();
+
+      // console.log(`apiStockLogoUrl is ${apiStockLogoUrl}`);
+      // console.log(`apiStockQuoteUrl is ${apiStockQuoteUrl}`);
 
       console.log(`apiStockLogoUrl`);
       console.log(apiStockLogoUrl);
@@ -101,7 +132,7 @@ targetPrice: 23.9201
 };
 
 /* ================================================
-    Display Stocks in Table Method for findByName
+    New Print Method for findByName
    ================================================ */
 
 // ****** we need to do 3rd party API calls for innerHTML
@@ -237,13 +268,22 @@ const postStocks = async () => {
     targetPrice: price.value, // get from UI
   };
 
+  // new object
+  // let stockSaveObj = {img: apiStockLogo.logo, name: symbol.value.toUpperCase(), targetPrice: price.value, quotePrice: apiStockQuote.c, quantity: quantity.value};
+
   // 4> putting object in Heroku DB
   jess.save(stockSaveObj);
 
   // use our function instead of renderListFromLocal();
   listItem.innerHTML = "";
 
-  // delay so DB has time to update before it's queried to have its contents printed to the screen
+  // old print to screen
+  // addItemCards();
+  
+  // normal
+  // displayStocks();
+
+  // delayed
   setTimeout(() => { displayStocks(); }, 1000);
 
   symbol.value = "";
@@ -281,6 +321,23 @@ postBtn.addEventListener("click", function (event) {
    ================================================ */
 
 const putStocks = async () => {
+  let apiStockLogo = await makeRequest1();
+  let apiStockQuote = await makeRequest2();
+  // console.log(apiStockLogo);
+  // console.log(apiStockQuote);
+
+  // jess.addItem(
+  //   apiStockLogo.logo,
+  //   symbol.value,
+  //   apiStockQuote.c,
+  //   jess.currentTime()
+  // );
+
+  console.log(`apiStockLogo.logo ${apiStockLogo.logo}`);
+  console.log(`symbol.value ${symbol.value}`);
+  console.log(`apiStockQuote.c ${apiStockQuote.c}`);
+
+  jess.setLocalStorage();
 
   let stockUpdateObj = {
     id: holdingId.value,
@@ -294,8 +351,14 @@ const putStocks = async () => {
   // use our function instead of renderListFromLocal();
   listItem.innerHTML = "";
 
-  // delayed >>> explain why delayed <<<
+  // normal
+  // displayStocks();
+
+  // delayed
   setTimeout(() => { displayStocks(); }, 1000);
+
+  symbol.value = "";
+  price.value = "";
 };
 
 // ================================================
@@ -329,14 +392,44 @@ putBtn.addEventListener("click", function (event) {
    ================================================ */
 
    const getAllStocks = async () => {
-    
+    // let apiStockLogo = await makeRequest1();
+    // let apiStockQuote = await makeRequest2();
+    // console.log(apiStockLogo);
+    // console.log(apiStockQuote);
+  
+    // // 1> add stock to array of stocks held in class instance
+    // jess.addItem(
+    //   apiStockLogo.logo,
+    //   symbol.value,
+    //   apiStockQuote.c,
+    //   jess.currentTime()
+    // );
+  
+    // // 2> save updated array to local storage
+    // jess.setLocalStorage();
+  
+    // // 3> put name and target price in object to be saved to DB
+    // // old object
+    // let stockSaveObj = {
+    //   name: symbol.value.toUpperCase(),
+    //   targetPrice: price.value, // get from UI
+    // };
+  
+    // 4> calling findAll
     jess.findAll();
+
   
     // use our function instead of renderListFromLocal();
     listItem.innerHTML = "";
     
-    // no delay required
+    // normal
     displayStocks();
+  
+    // delayed
+    // setTimeout(() => { displayStocks(); }, 5000);
+  
+    symbol.value = "";
+    price.value = "";
   };
   
   // ================================================
@@ -372,16 +465,39 @@ putBtn.addEventListener("click", function (event) {
    // a lot of the code in this method can be removed
 
 const getByNameStocks = async () => {
+  let apiStockLogo = await makeRequest1();
+  let apiStockQuote = await makeRequest2();
+  console.log(apiStockLogo);
+  console.log(apiStockQuote);
 
+  jess.addItem(
+    apiStockLogo.logo,
+    symbol.value,
+    apiStockQuote.c,
+    jess.currentTime()
+  );
+
+  jess.setLocalStorage();
+
+  let stockSaveObj = {
+    name: symbol.value.toUpperCase(),
+    targetPrice: apiStockQuote.c,
+  };
 
   // search Heroku db for stock by name
-  jess.findByName(symbol.value.toUpperCase());
+  jess.findByName(stockSaveObj.name);
 
   // use our function instead of renderListFromLocal();
   listItem.innerHTML = "";
+
+  // old print to screen
+  // addItemCards();
   
   // normal
   displayStocksByName();
+
+  symbol.value = "";
+  price.value = "";
 };
 
 // ================================================
@@ -414,20 +530,41 @@ getByNameBtn.addEventListener("click", function (event) {
     Delete by ID
    ================================================ */
 
-const deleteStocksById = async () => {
+const deleteStocks = async () => {
+  let apiStockLogo = await makeRequest1();
+  let apiStockQuote = await makeRequest2();
+  console.log(apiStockLogo);
+  console.log(apiStockQuote);
+
+  jess.setLocalStorage();
+
+  let stockDeleteObj = {
+    id: holdingId.value,
+    name: symbol.value.toUpperCase(),
+    targetPrice: apiStockQuote.c,
+  };
 
   // delete entry by id
-  jess.deleteById(holdingId.value);
+  jess.delete(stockDeleteObj);
 
   // // use our function instead of renderListFromLocal();
   listItem.innerHTML = "";
 
+  // old print to screen
+  // addItemCards();
+  
+  // normal
+  // displayStocks();
+
   // delayed
   setTimeout(() => { displayStocks(); }, 1000);
+
+  // symbol.value = "";
+  // price.value = "";
 };
 
 // ================================================
-deleteByIdBtn.addEventListener("click", function (event) {
+deleteBtn.addEventListener("click", function (event) {
   event.preventDefault(); // related to action.php in stock-form.html?+++++++++++
 
   symbol = document.getElementById("symbol");
@@ -437,5 +574,5 @@ deleteByIdBtn.addEventListener("click", function (event) {
 
   // THIS IS WHERE WE CALL deleteStocks
 
-  deleteStocksById();
+  deleteStocks();
 });
