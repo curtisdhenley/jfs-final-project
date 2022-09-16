@@ -47,25 +47,13 @@ class UserController {
     this.currentID = JSON.parse(localStorage.getItem("userId"));
   }
 
-  // POST
-// save({ name, targetPrice }) {
-//   const data = { name, targetPrice };
-
-//   fetch("https://peaceful-ocean-58466.herokuapp.com/user/add", {
-//     method: "POST", // or 'PUT'
-//     headers: {
-//       "Content-Type": "application/json",
-//     },
-//     body: JSON.stringify(data),
-//   })
-//     .then((response) => response.json())
-//     .then((data) => {
-//       console.log("Success:", data);
-//     })
-//     .catch((error) => {
-//       console.error("Error:", error);
-//     });
-// }
+getAllUsers = async () => {
+  let fetchURL = "https://peaceful-ocean-58466.herokuapp.com/user";
+  let response = await fetch(fetchURL);
+  let userArr = await response.json();
+  console.log("User array from DB", userArr);
+  return userArr;
+}
 
 save({ firstName, lastName, email, avatar }) {
   console.log(` avatar URL: ${avatar}`);
