@@ -25,25 +25,65 @@ let apiStockLogoUrl = "Default API Logo";
 let apiStockQuoteUrl = "Default API Quote";
 
 
-const displayUsers = () => {
-  // TODO: change stocks to users in controller
-  const userJson = localStorage.getItem("user"); 
+// const displayUsers = () => {
+//   // TODO: change stocks to users in controller
+//   const userJson = localStorage.getItem("user"); 
 
-  const userArr = JSON.parse(userJson);
-  // loop iterates through local storage and rebuilds html to make list of stocks
-  for (let i = 0; i < userArr.length; i++) {
+//   const userArr = JSON.parse(userJson);
+//   // loop iterates through local storage and rebuilds html to make list of stocks
+//   for (let i = 0; i < userArr.length; i++) {
+//     console.log(`i is ${i}`);
+
+//     let newRow = document.createElement("tr");
+//     newRow.setAttribute("id", i);
+//     newRow.innerHTML += `
+//         <th scope="row"><img class="img-thumbnail" src="${userArr[i].avatarUrl}" style="height: 50px;"></th>
+//         <td>${userArr[i].firstName}</td>
+//         <td>${userArr[i].lastName}</td>
+//         <td>${userArr[i].email}`;
+//     listItem.appendChild(newRow);
+//   }
+// };
+// old display code ends ^^
+
+
+// new display users code
+const displayUsersDb = async () => {
+  const usersArrDb = await peterUserController.getAllUsers();
+
+  for(let i = 0; i < usersArrDb.length; i++) {
     console.log(`i is ${i}`);
 
     let newRow = document.createElement("tr");
     newRow.setAttribute("id", i);
     newRow.innerHTML += `
-        <th scope="row"><img class="img-thumbnail" src="${userArr[i].avatarUrl}" style="height: 50px;"></th>
-        <td>${userArr[i].firstName}</td>
-        <td>${userArr[i].lastName}</td>
-        <td>${userArr[i].email}`;
+        <th scope="row"><img class="img-thumbnail" src="${usersArrDb[i].avatar}" style="height: 50px;"></th>
+        <td>${usersArrDb[i].firstName}</td>
+        <td>${usersArrDb[i].lastName}</td>
+        <td>${usersArrDb[i].email}`;
     listItem.appendChild(newRow);
   }
-};
+}
+// new display user code ends ^^
+
+const displayUserByLastName = async () => {
+  const lastName = lastNameElement.value;
+  const lastNameArr = await peterUserController.findByLastName(lastName);
+  listItem.innerHTML = "";
+
+  for (let i = 0; i < lastNameArr.length; i++){
+    console.log(`i is ${i}`);
+
+    let newRow = document.createElement("tr");
+    newRow.setAttribute("id", i);
+    newRow.innerHTML += `
+        <th scope="row"><img class="img-thumbnail" src="${lastNameArr[i].avatar}" style="height: 50px;"></th>
+        <td>${lastNameArr[i].firstName}</td>
+        <td>${lastNameArr[i].lastName}</td>
+        <td>${lastNameArr[i].email}`;
+    listItem.appendChild(newRow);
+  }
+}
 
 const makeRequest1 = async () => {
   let response = await fetch(apiStockLogoUrl);
@@ -113,7 +153,7 @@ const renderUsers = async () => {
 
   // use our function instead of renderListFromLocal();
   listItem.innerHTML = "";
-  displayUsers();
+  displayUsersDb();
 
   symbol.value = "";
   price.value = "";
@@ -146,7 +186,7 @@ const postUser = async () => {
   console.log(userSaveObj);
 
   listItem.innerHTML = "";
-  displayUsers();
+  setTimeout(() => { displayUsersDb(); }, 1000);
   clearFormData();
 }
 
@@ -158,20 +198,20 @@ const deleteUser = async () => {
   peterUserController.delete(userToDeleteId);
 
   listItem.innerHTML = "";
-  displayUsers();
+  setTimeout(() => { displayUsersDb(); }, 1000);
   clearFormData();
 }
 
 const putUser = () => {
-  peterUserController.addUser(
-    avatarUrlElement.value,
-    firstNameElement.value,
-    lastNameElement.value,
-    emailElement.value,
-    peterUserController.currentTime()
-  );
+  // peterUserController.addUser(
+  //   avatarUrlElement.value,
+  //   firstNameElement.value,
+  //   lastNameElement.value,
+  //   emailElement.value,
+  //   peterUserController.currentTime()
+  // );
 
-  peterUserController.setLocalStorage();
+  // peterUserController.setLocalStorage();
   // email, firstName, lastName, avatar, id 
   let userUpdateObj = { email: emailElement.value, firstName: firstNameElement.value, lastName: lastNameElement.value, avatar: avatarUrlElement.value, id: userIdElement.value};
   console.log(`user update obj: ${userUpdateObj}`);
@@ -179,15 +219,12 @@ const putUser = () => {
   console.log(userUpdateObj);
 
   listItem.innerHTML = "";
-  displayUsers();
+  setTimeout(() => { displayUsersDb(); }, 1000);
   clearFormData();
 }
 
 const getUserByLastName = () => {
-  const lastName = lastNameElement.value;
-  peterUserController.findByLastName(lastName);
-  console.log(lastName);
-  // console log from findByLastName will display list of users with same last name in console
+  displayUserByLastName();
 }
 
 // const getByNameStocks = async () => {
@@ -250,6 +287,12 @@ deleteBtn.addEventListener("click", function (e) {
   e.preventDefault();
   deleteUser();
 });
+
+getAllUsersBtn.addEventListener("click", function (e) {
+  e.preventDefault();
+  listItem.innerHTML = "";
+  displayUsersDb();
+})
 
 findLastNameBtn.addEventListener("click", function (e) {
   e.preventDefault();
