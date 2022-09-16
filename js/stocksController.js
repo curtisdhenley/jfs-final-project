@@ -94,13 +94,23 @@ class StocksController {
       });
   }
 
-  // GET
-  findByName = async (name) => {
-    let fetchURL = "https://peaceful-ocean-58466.herokuapp.com/holding/name?name=" + name;
+  // GET all
+  findAll = async () => {
+    let fetchURL = "https://peaceful-ocean-58466.herokuapp.com/holding";
     let response = await fetch(fetchURL);
     let stockJson = await response.json();
     console.log("stockJson", stockJson);
     // console.log(stockJson);
+    return stockJson;
+}
+
+  // GET By Name
+  findByName = async (name) => {
+    console.log(`name = ${name}`);
+    let fetchURL = "https://peaceful-ocean-58466.herokuapp.com/holding/name?name=" + name;
+    let response = await fetch(fetchURL);
+    let stockJson = await response.json();
+    console.log("stockJson", stockJson);
     return stockJson;
 }
 
@@ -131,11 +141,11 @@ update({ id, name, targetPrice }) {
 }
 
 // DELETE
-// delete = async (id) => {
+// deleteById = async (id) => {
 //   let fetchURL = "https://peaceful-ocean-58466.herokuapp.com/holding/" + id;
 //   let response = await fetch(fetchURL);
 //   let stockJson = await response.json();
-//   console.log("stockJson", stockJson);
+//   console.log("deleteById | stockJson", stockJson);
 //   return stockJson;
 // }
 
@@ -160,7 +170,29 @@ delete({ id, name, targetPrice }) {
     });
 }
 
+// DELETE BY ID
+// currently not in use
+deleteById(id) {
+  let fetchURL = "https://peaceful-ocean-58466.herokuapp.com/holding/" + id;
+  // const data = { id, name, targetPrice };
+
+  fetch(fetchURL, {
+    method: "DELETE",
+    headers: {
+      "Content-Type": "application/json",
+    },
+    // body: JSON.stringify(data),
+  });
+    // .then((response) => response.json())
+    // .then((data) => {
+    //   console.log("Success:", data);
+    // })
+    // .catch((error) => {
+    //   console.error("Error:", error);
+    // });
 }
+
+} // does this need to be deleted, no closes controller
 
 const bob = new StocksController();
 
