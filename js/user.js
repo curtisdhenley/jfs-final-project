@@ -60,7 +60,7 @@ const displayUsersDb = async () => {
         <th scope="row"><img class="img-thumbnail" src="${usersArrDb[i].avatar}" style="height: 50px;"></th>
         <td>${usersArrDb[i].firstName}</td>
         <td>${usersArrDb[i].lastName}</td>
-        <td>${usersArrDb[i].email}`;
+        <td>${usersArrDb[i].email}</td>`;
     listItem.appendChild(newRow);
   }
 }
