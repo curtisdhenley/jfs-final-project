@@ -100,7 +100,8 @@
         <hr />
 
         <!-- img, symbol, price, updatedAt -->
-        <form action="/action_page.php"> <!-- we don't need this, right?++++++++++++++++++++++++++ -->
+        <form action="/action_page.php">
+          <!-- we don't need this, right?++++++++++++++++++++++++++ -->
           <label for="symbol">Ticker Symbol</label><br />
           <input
             type="text"
@@ -133,8 +134,16 @@
           <input type="submit" id="postBtn" value="Post" /><br /><br />
           <input type="submit" id="putBtn" value="Put" /><br /><br />
           <input type="submit" id="getAllBtn" value="Get All" />
-          <input type="submit" id="getByNameBtn" value="Get by Name" /><br /><br />
-          <input type="submit" id="deleteByIdBtn" value="Delete by ID" /><br /><br />
+          <input
+            type="submit"
+            id="getByNameBtn"
+            value="Get by Name"
+          /><br /><br />
+          <input
+            type="submit"
+            id="deleteByIdBtn"
+            value="Delete by ID"
+          /><br /><br />
         </form>
 
         <hr />
@@ -142,6 +151,16 @@
         <table>
           <thead>
             <tr>
+              <th>
+                <div class="form-check">
+                  <input
+                    class="form-check-input"
+                    type="checkbox"
+                    value=""
+                    id="headerRowCheckbox"
+                  />
+                </div>
+              </th>
               <th>Stock</th>
               <th>Symbol</th>
               <th>Target Price</th>
@@ -151,6 +170,16 @@
           </thead>
 
           <tbody id="list-items"></tbody>
+          <!-- Let's put delete button for checkboxes here -->
+          <tfoot>
+            <tr>
+              <input
+                type="submit"
+                id="deleteBtn"
+                value="Delete"
+              />
+            </tr>
+          </tfoot>
         </table>
       </div>
     </main>
