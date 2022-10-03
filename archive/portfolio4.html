@@ -123,6 +123,14 @@
             name="quantity"
             placeholder="30"
           /><br /><br />
+          <label for="holdingId">Transaction ID</label><br />
+          <!-- really just Holding ID -->
+          <input
+            type="text"
+            id="holdingId"
+            name="holdingId"
+            placeholder="7836"
+          /><br /><br />
           <input type="submit" id="postBtn" value="Post" /><br /><br />
           <input type="submit" id="putBtn" value="Put" /><br /><br />
           <input type="submit" id="getAllBtn" value="Get All" />
@@ -130,6 +138,11 @@
             type="submit"
             id="getByNameBtn"
             value="Get by Name"
+          /><br /><br />
+          <input
+            type="submit"
+            id="deleteByIdBtn"
+            value="Delete by ID"
           /><br /><br />
         </form>
 
@@ -157,11 +170,17 @@
           </thead>
 
           <tbody id="list-items"></tbody>
+          <!-- Let's put delete button for checkboxes here -->
+          <tfoot>
+            <tr>
+              <input
+                type="submit"
+                id="deleteBtn"
+                value="Delete"
+              />
+            </tr>
+          </tfoot>
         </table>
-
-        <br />
-        <input type="submit" id="deleteBtn" value="Delete" />
-
       </div>
     </main>
     <!--Main Section END -->

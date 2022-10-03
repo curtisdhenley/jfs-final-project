@@ -7,7 +7,7 @@
 
 // 2> using get all on an empty DB breaks the system, case must be prevented
 
-import { StocksController } from "./stocksController.js";
+import { StocksController } from "../js/stocksController.js";
 
 const jess = new StocksController();
 
@@ -20,9 +20,6 @@ let deleteByIdBtn = document.getElementById("deleteByIdBtn");
 // will deleteBtn work if table is not yet drawn?
 let deleteBtn = document.getElementById("deleteBtn");
 let listItem = document.getElementById("list-items");
-
-let headerRowCheckbox = document.getElementById("headerRowCheckbox");
-
 let symbol = "Default symbol";
 let price = "Default price";
 let quantity = "Default quantity";
@@ -130,10 +127,11 @@ targetPrice: 23.9201
   console.log(`listItem`);
   console.log(firstListItem);
 
-  const checkboxHtmlTag = document.querySelector("#checkbox4");
+  const isChecked = document.querySelector("#checkbox4");
 
-  console.log(`checkboxHtmlTag`);
-  console.log(checkboxHtmlTag);
+  console.log(`isChecked`);
+  console.log(isChecked);
+
 };
 
 /* ================================================
@@ -448,34 +446,79 @@ getByNameBtn.addEventListener("click", function (event) {
 });
 
 /* ================================================
+    Delete by ID
+   ================================================ */
+
+const deleteStocksById = async () => {
+  // delete entry by id
+  jess.deleteById(holdingId.value);
+
+  // // use our function instead of renderListFromLocal();
+  listItem.innerHTML = "";
+
+  // delayed
+  setTimeout(() => {
+    displayStocks();
+  }, 1000);
+};
+
+// ================================================
+deleteByIdBtn.addEventListener("click", function (event) {
+  event.preventDefault(); // related to action.php in stock-form.html?+++++++++++
+
+  symbol = document.getElementById("symbol");
+  price = document.getElementById("price");
+  quantity = document.getElementById("quantity");
+  holdingId = document.getElementById("holdingId");
+
+  // THIS IS WHERE WE CALL deleteStocks
+
+  deleteStocksById();
+});
+
+/* ================================================
     Delete by Checkbox
    ================================================ */
 
 const deleteStocksByCheckbox = async () => {
+
+  // let isChecked = document.querySelector("#checkbox24");
+
+  // console.log(`isChecked STATUS`);
+  // console.log(isChecked.checked);
+
+  // if (isChecked.checked){
+  //   // delete first row of table
+  //   jess.deleteById(24);
+  // }
+
   // iterating checkboxes
   let stocksDbArr = await jess.findAll();
-  let highestDbId = stocksDbArr[stocksDbArr.length - 1].id;
+  let highestDbId = stocksDbArr[stocksDbArr.length-1].id;
   let dbItemCount = 0;
   let checkboxToQuery = 0;
-  let checkboxStatus = 0;
+  let isChecked = 0;
+  let checkboxToDelete = 0;
 
   // Do we need an object to hold the checkboxes' status?
   let checkedBoxesObj = {};
 
   console.log(`highestDbId = ${highestDbId}`);
 
-  for (let i = 4; i <= highestDbId; i += 10) {
-    checkboxToQuery = "#checkbox" + i;
+  for (let i = 4; i <= highestDbId; i+=10) {
+    checkboxToQuery = "#checkbox"+i;
 
     console.log(`checkboxToQuery = ${checkboxToQuery}`);
 
-    checkboxStatus = document.querySelector(checkboxToQuery);
+    isChecked = document.querySelector(checkboxToQuery);
 
-    console.log(`checkboxStatus = ${checkboxStatus}`);
+    // console.log(`isChecked.checked = ${isChecked.checked}`);
+    console.log(`isChecked = ${isChecked}`);
 
-    if (checkboxStatus != null) {
-      checkedBoxesObj[i] = checkboxStatus.checked;
+    if(isChecked !=  null){
+      checkedBoxesObj[i] = isChecked.checked;
     }
+    
   }
 
   console.log(`dbItemCount = ${dbItemCount}`);
@@ -483,13 +526,69 @@ const deleteStocksByCheckbox = async () => {
   console.log(`checkedBoxesObj`);
   console.log(checkedBoxesObj);
 
+
   for (let [key, value] of Object.entries(checkedBoxesObj)) {
+
     console.log(`key, value = ${key}, ${value}`);
 
+    // checkboxToDelete = "#checkbox"+key;
+
+    // console.log(`checkboxToDelete = ${checkboxToDelete}`);
+    
     if (value) {
+
       jess.deleteById(key);
-    }
+
+   }
+}
+
+  
+
+
+
+  /* Temporary Block BEGIN
+
+
+  // we need an array that has all of the IDs of the items/rows that are checked
+  // let stockId= event.target.getAttribute("data-id");
+
+  // array for checked boxes
+  let checkedBoxesArr = [];
+
+  // ideas
+  let checkboxId = "No checkbox";
+  let checkboxStatus = "No DOM element";   
+
+  // for loop to add items to array
+
+  // >>> how do we know when to end the loop? <<<
+
+  // loop iterates through array of stocks returned from database
+  for (let i = 0; i < stocksDbArr.length; i++) {
+
+    checkboxId = "#checkbox"+i;
+
+    // checkboxStatus = document.getElementById(checkboxId);
+    // checkboxStatus.value;
+
+
+
+    //const js = document.querySelector('#checkbox4');
+
+     const js = document.querySelector(checkboxId);
+
+        console.log(`js.checked`);
+        console.log(js.checked);
+
   }
+
+  // delete entry by id
+  jess.deleteById(holdingId.value);
+
+
+  Temporary Block END */
+
+
 
   // // use our function instead of renderListFromLocal();
   listItem.innerHTML = "";
@@ -513,35 +612,7 @@ deleteBtn.addEventListener("click", function (event) {
   holdingId = document.getElementById("holdingId");
 
   // THIS IS WHERE WE CALL deleteStocks
-  console.log("DELETE BUTTON PUSHED");
+  console.log("DELETE BUTTON PUSHED")
 
   deleteStocksByCheckbox();
-});
-
-// changing all checkboxes with main checkbox
-function selectAllToggle() {
-  let checkboxes = document.querySelectorAll('input[type="checkbox"]');
-
-  if (headerRowCheckbox.checked) {
-    for (let i = 0; i < checkboxes.length; i++) {
-      if (checkboxes[i].type == "checkbox") {
-        checkboxes[i].checked = true;
-      }
-    }
-  } else {
-    for (let i = 0; i < checkboxes.length; i++) {
-      if (checkboxes[i].type == "checkbox") {
-        checkboxes[i].checked = false;
-      }
-    }
-  }
-}
-
-// curtis will explain toggle <<< <<< <<<
-// save headerrow.checked as its own variable
-
-headerRowCheckbox.addEventListener("click", function (event) {
-
-  selectAllToggle();
-  
 });
