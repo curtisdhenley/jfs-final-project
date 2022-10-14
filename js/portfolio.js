@@ -22,6 +22,7 @@ let deleteBtn = document.getElementById("deleteBtn");
 let listItem = document.getElementById("list-items");
 
 let headerRowCheckbox = document.getElementById("headerRowCheckbox");
+let anyCheckbox = document.querySelectorAll(".body-row-checkbox");
 
 let symbol = "Default symbol";
 let price = "Default price";
@@ -82,21 +83,21 @@ targetPrice: 23.9201
 
     let apiStockQuoteUrl = await apiStockQuoteUrlResponse.json();
 
-    console.log(`stocksDbId`);
-    console.log(stocksDbId);
+    // console.log(`stocksDbId`);
+    // console.log(stocksDbId);
 
-    console.log(`apiStockLogoUrl`);
-    console.log(apiStockLogoUrl);
+    // console.log(`apiStockLogoUrl`);
+    // console.log(apiStockLogoUrl);
 
-    console.log(`apiStockQuoteUrl`);
-    console.log(apiStockQuoteUrl);
+    // console.log(`apiStockQuoteUrl`);
+    // console.log(apiStockQuoteUrl);
 
     let newRow = document.createElement("tr");
     newRow.setAttribute("id", i);
     newRow.innerHTML += `
         <th scope="row">
           <div class="form-check">
-            <input class="form-check-input" type="checkbox" value="" id="checkbox${stocksDbId}">
+            <input class="form-check-input body-row-checkbox" type="checkbox" value="" id="checkbox${stocksDbId}">
           </div>
         </th>
         <td><img class="img-thumbnail" src="${apiStockLogoUrl.logo}" style="height: 50px;"></td>
@@ -109,31 +110,19 @@ targetPrice: 23.9201
     listItem.appendChild(newRow);
   }
 
-  /* Temporary Block BEGIN
+  // V V V V V V V V V V V V V V V V V V V V V V
+  // try creating dynamic event listeners
+  // don't forget to do find by name too <<< <<<
+  // dynamicCheckboxEvents();
 
-  let lastRow = document.createElement("tr");
-  lastRow.innerHTML += `
-    <input
-      type="submit"
-      id="deleteBtn"
-      value="Delete"
-    />`;
-  listItem.appendChild(lastRow);
+  // [Explainer] now that the table of stocks is done being rendered dynamicCheckboxEvents is called to set event listeners for the checkboxes in each row
+  setTimeout(() => {
+    dynamicCheckboxEvents();
+  }, 3000);
 
-  // setting deleteBtn again since button has just be drawn
-  deleteBtn = document.getElementById("deleteBtn");
+  console.log(`anyCheckbox after dynamicCheckboxEvents called`);
+  console.log(anyCheckbox);
 
-  Temporary Block END */
-
-  let firstListItem = listItem[0];
-
-  console.log(`listItem`);
-  console.log(firstListItem);
-
-  const checkboxHtmlTag = document.querySelector("#checkbox4");
-
-  console.log(`checkboxHtmlTag`);
-  console.log(checkboxHtmlTag);
 };
 
 /* ================================================
@@ -445,6 +434,11 @@ getByNameBtn.addEventListener("click", function (event) {
 
   // THIS IS WHERE WE CALL postStocks
   getByNameStocks();
+
+  // make sure header row checkbox is correctly checked
+  setTimeout(() => {
+    refreshCheckboxes();
+  }, 1500);
 });
 
 /* ================================================
@@ -518,9 +512,49 @@ deleteBtn.addEventListener("click", function (event) {
   deleteStocksByCheckbox();
 });
 
-// changing all checkboxes with main checkbox
+function refreshCheckboxes() {
+  let checkboxesNodeList = document.querySelectorAll('input[type="checkbox"]');
+
+  const checkboxesArr = Array.from(checkboxesNodeList);
+
+  console.log(`checkboxesArr`);
+  console.log(checkboxesArr);
+
+  // [Explainer] .shift removes the first item in checkboxesArr because it's the header row
+  checkboxesArr.shift();
+
+  let maxPossibleBoxesChecked = checkboxesArr.length;
+  let numOfCheckedBoxes = 0;
+
+  for (let i = 0; i < checkboxesArr.length; i++) {
+    if (checkboxesArr[i].checked) {
+      numOfCheckedBoxes++;
+    }
+  }
+
+  console.log(`numOfCheckedBoxes = ${numOfCheckedBoxes}`);
+  console.log(`maxPossibleBoxesChecked = ${maxPossibleBoxesChecked}`);
+
+  // code for setting the dashed header row checkbox
+  if (numOfCheckedBoxes == 0) {
+    headerRowCheckbox.checked = false;
+    headerRowCheckbox.indeterminate = false;
+    console.log(`numOfCheckedBoxes == 0 SO headerRowCheckbox.checked = false`);
+  } else if (numOfCheckedBoxes == maxPossibleBoxesChecked) {
+    headerRowCheckbox.checked = true;
+    console.log(`numOfCheckedBoxes == max SO headerRowCheckbox.checked = true`);
+  } else {
+    headerRowCheckbox.indeterminate = true;
+    console.log(`numOfCheckedBoxes between 0 and max SO headerRowCheckbox.indeterminate = true`);
+  }
+}
+
+// changing all checkboxes to match the state of the main checkbox
 function selectAllToggle() {
   let checkboxes = document.querySelectorAll('input[type="checkbox"]');
+
+  console.log(`checkboxes`);
+  console.log(checkboxes);
 
   if (headerRowCheckbox.checked) {
     for (let i = 0; i < checkboxes.length; i++) {
@@ -537,11 +571,39 @@ function selectAllToggle() {
   }
 }
 
-// curtis will explain toggle <<< <<< <<<
-// save headerrow.checked as its own variable
+// [Explainer] this function is making event listeners for all of the dynamically generated checkboxes that are created as the table of stocks is rendered 
+function dynamicCheckboxEvents(){
+
+  // anyCheckbox is updated one last time to make sure all rows in the table have had the opportunity to be drawn
+  anyCheckbox = document.querySelectorAll(".body-row-checkbox");
+
+  console.log(`Inside dynamicCheckboxEvents`);
+
+  // console.log to check what's in anyCheckbox
+  console.log(`anyCheckbox within dynamicCheckboxEvents`);
+  console.log(anyCheckbox);
+
+  anyCheckbox.forEach((box) => {
+
+    console.log("anyCheckbox.forEach RUNNING");  
+    
+    box.addEventListener("click", function handleClick(event) {
+      console.log("box clicked", event);
+  
+      // calling refreshCheckboxes to assure header row checkbox is correctly checked
+      setTimeout(() => {
+        refreshCheckboxes();
+      }, 1000);
+    });
+  });
+
+}
 
 headerRowCheckbox.addEventListener("click", function (event) {
-
   selectAllToggle();
-  
+
+  // make sure header row checkbox is correctly checked
+  setTimeout(() => {
+    refreshCheckboxes();
+  }, 1000);
 });
