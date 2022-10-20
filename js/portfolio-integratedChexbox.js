@@ -31,9 +31,6 @@ let holdingId = "Default holding ID";
 let apiStockLogoUrl = "Default API Logo";
 let apiStockQuoteUrl = "Default API Quote";
 
-// object to hold ids of table rows with checked/unchecked boxes
-let checkedBoxesObj = {};
-
 /* ================================================
     Display Stocks in Table Method
    ================================================ */
@@ -464,50 +461,44 @@ getByNameBtn.addEventListener("click", function (event) {
   refreshCheckboxes();
 });
 
-
-
-/* ================================================
-    Update Checkbox Statuses Object
-   ================================================ */
-
-   // function getCheckboxStatuses(){
-const getCheckboxStatuses = async () => {
-    // get a list of everything in the DB
-    let stocksDbArr = await jess.findAll();
-    let highestDbId = stocksDbArr[stocksDbArr.length - 1].id;
-    let dbItemCount = 0;
-    let checkboxToQuery = 0;
-    let checkboxStatus = 0;
-  
-
-    console.log(`highestDbId = ${highestDbId}`);
-  
-    for (let i = 4; i <= highestDbId; i += 10) {
-      checkboxToQuery = "#checkbox" + i;
-      console.log(`Line 487`);
-      console.log(`checkboxToQuery = ${checkboxToQuery}`);
-  
-      checkboxStatus = document.querySelector(checkboxToQuery);
-  
-      console.log(`checkboxStatus = ${checkboxStatus.checked}`);
-
-      // V V Do we get here on GET by name V V 
-      console.log(`Line 494`);
-  
-      if (checkboxStatus != null) {
-        checkedBoxesObj[i] = checkboxStatus.checked;
-      }
-    }
-  
-    console.log(`dbItemCount = ${dbItemCount}`);
-
-}
-
 /* ================================================
     Delete by Checkbox
    ================================================ */
 
-function deleteStocksByCheckbox() {
+const deleteStocksByCheckbox = async () => {
+  // iterating checkboxes
+  let stocksDbArr = await jess.findAll();
+  // let stocksDbArr = await jess.findByName(symbol.value);
+  //   console.log(`stocksDbArr`);
+  //   console.log(stocksDbArr);
+  let highestDbId = stocksDbArr[stocksDbArr.length - 1].id;
+  let dbItemCount = 0;
+  let checkboxToQuery = 0;
+  let checkboxStatus = 0;
+
+  // Do we need an object to hold the checkboxes' status?
+  let checkedBoxesObj = {};
+
+  console.log(`highestDbId = ${highestDbId}`);
+
+  for (let i = 4; i <= highestDbId; i += 10) {
+    checkboxToQuery = "#checkbox" + i;
+
+    console.log(`checkboxToQuery = ${checkboxToQuery}`);
+
+    checkboxStatus = document.querySelector(checkboxToQuery);
+
+    console.log(`checkboxStatus = ${checkboxStatus}`);
+
+    if (checkboxStatus != null) {
+      checkedBoxesObj[i] = checkboxStatus.checked;
+    }
+  }
+
+  console.log(`dbItemCount = ${dbItemCount}`);
+
+  console.log(`checkedBoxesObj`);
+  console.log(checkedBoxesObj);
 
   for (let [key, value] of Object.entries(checkedBoxesObj)) {
     console.log(`key, value = ${key}, ${value}`);
@@ -517,7 +508,7 @@ function deleteStocksByCheckbox() {
     }
   }
 
-  // is listItem needed
+  // // use our function instead of renderListFromLocal();
   listItem.innerHTML = "";
 
   // delayed
@@ -525,6 +516,8 @@ function deleteStocksByCheckbox() {
     displayStocks();
   }, 2000);
 
+  // doing await instead of delay
+  // await displayStocks();
 };
 
 // ================================================
@@ -624,11 +617,6 @@ function dynamicCheckboxEvents(){
     
     box.addEventListener("click", function handleClick(event) {
       console.log("box clicked", event);
-  
-      // This code comes from getCheckboxStatuses
-      getCheckboxStatuses();      
-      console.log(`checkedBoxesObj`);
-      console.log(checkedBoxesObj);
   
       // calling refreshCheckboxes to assure header row checkbox is correctly checked
       setTimeout(() => {
