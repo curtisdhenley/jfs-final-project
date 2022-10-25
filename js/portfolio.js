@@ -160,6 +160,7 @@ targetPrice: 23.9201
 
   // loop iterates through array of stocks returned from database
   for (let i = 0; i < stocksDbArr.length; i++) {
+    let stocksDbId = stocksDbArr[i].id;
     let stocksDbName = stocksDbArr[i].name;
     let stocksDbTargetPrice = stocksDbArr[i].targetPrice;
 
@@ -185,12 +186,13 @@ targetPrice: 23.9201
     console.log(`apiStockQuoteUrl`);
     console.log(apiStockQuoteUrl);
 
+    // <input class="form-check-input body-row-checkbox" type="checkbox" value="" id="flexCheckDefault">
     let newRow = document.createElement("tr");
     newRow.setAttribute("id", i);
     newRow.innerHTML += `
         <th scope="row">
           <div class="form-check">
-            <input class="form-check-input body-row-checkbox" type="checkbox" value="" id="flexCheckDefault">
+          <input class="form-check-input body-row-checkbox" type="checkbox" value="" id="checkbox${stocksDbId}">
           </div>
         </th>
         <td><img class="img-thumbnail" src="${apiStockLogoUrl.logo}" style="height: 50px;"></td>
@@ -494,11 +496,14 @@ const getCheckboxStatuses = async () => {
       // V V Do we get here on GET by name V V 
       console.log(`Line 494`);
   
+      // do we need to check if the checkboxstatus is also not empty? 
       if (checkboxStatus != null) {
         checkedBoxesObj[i] = checkboxStatus.checked;
       }
+      console.log("line 500");
     }
-  
+    console.log("Checked box obj");
+    console.log(checkedBoxesObj);
     console.log(`dbItemCount = ${dbItemCount}`);
 
 }
