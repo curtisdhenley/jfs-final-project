@@ -7,21 +7,22 @@
 
 // 2> using get all on an empty DB breaks the system, case must be prevented
 
-import { StocksController } from "./stocksController.js";
+import { StocksController } from "../js/stocksController.js";
 
 const jess = new StocksController();
 
+// let submitBtn = document.getElementById("submitBtn");
 let postBtn = document.getElementById("postBtn");
 let putBtn = document.getElementById("putBtn");
 let getByNameBtn = document.getElementById("getByNameBtn");
 let getAllBtn = document.getElementById("getAllBtn");
+let deleteByIdBtn = document.getElementById("deleteByIdBtn");
+// will deleteBtn work if table is not yet drawn?
 let deleteBtn = document.getElementById("deleteBtn");
 let listItem = document.getElementById("list-items");
 
 let headerRowCheckbox = document.getElementById("headerRowCheckbox");
 let anyCheckbox = document.querySelectorAll(".body-row-checkbox");
-
-// let displayStocksType = "Default Stocks Type";
 
 let symbol = "Default symbol";
 let price = "Default price";
@@ -30,10 +31,6 @@ let holdingId = "Default holding ID";
 let apiStockLogoUrl = "Default API Logo";
 let apiStockQuoteUrl = "Default API Quote";
 
-// object to hold ids of table rows with checked/unchecked boxes
-let checkedBoxesObj = {};
-
-
 /* ================================================
     Display Stocks in Table Method
    ================================================ */
@@ -41,22 +38,11 @@ let checkedBoxesObj = {};
 // ****** we need to do 3rd party API calls for innerHTML
 
 // needed to make method async and put an await on jess.findAll in order for FOR loop based on stocksDbArr.length to work
-const displayStocks = async (displayStocksType) => {
+const displayStocks = async () => {
   const stocksJSON = localStorage.getItem("stocks");
   const stocksLocalArr = JSON.parse(stocksJSON);
-  let stocksDbArr = "";
 
-  // let displayStocksType = "Default Stocks Type";
-
-  if (displayStocksType === "getAll") {
-    console.log("IF +++++");
-    stocksDbArr = await jess.findAll();
-  } else if (displayStocksType === "getByName") {
-    console.log("ELSE IF +++++++++");
-    stocksDbArr = await jess.findByName(symbol.value);
-  } else {
-    console.log("DISPLAY STOCKS TYPE ERROR ==============");
-  }
+  const stocksDbArr = await jess.findAll();
 
   /*
   LOCAL STORAGE CONTENT
@@ -97,6 +83,15 @@ targetPrice: 23.9201
 
     let apiStockQuoteUrl = await apiStockQuoteUrlResponse.json();
 
+    // console.log(`stocksDbId`);
+    // console.log(stocksDbId);
+
+    // console.log(`apiStockLogoUrl`);
+    // console.log(apiStockLogoUrl);
+
+    // console.log(`apiStockQuoteUrl`);
+    // console.log(apiStockQuoteUrl);
+
     let newRow = document.createElement("tr");
     newRow.setAttribute("id", i);
     newRow.innerHTML += `
@@ -108,12 +103,17 @@ targetPrice: 23.9201
         <td><img class="img-thumbnail" src="${apiStockLogoUrl.logo}" style="height: 50px;"></td>
         <td>${stocksDbName}</td>
         <td>${stocksDbTargetPrice}</td>
-
+        
         <td>${apiStockQuoteUrl.c}</td> <!-- get from 3rd party API-->
-
+        
         <td>quantity</td> <!-- get from our API-->`;
     listItem.appendChild(newRow);
   }
+
+  // V V V V V V V V V V V V V V V V V V V V V V
+  // try creating dynamic event listeners
+  // don't forget to do find by name too <<< <<<
+  // dynamicCheckboxEvents();
 
   // [Explainer] now that the table of stocks is done being rendered dynamicCheckboxEvents is called to set event listeners for the checkboxes in each row
   setTimeout(() => {
@@ -122,6 +122,92 @@ targetPrice: 23.9201
 
   console.log(`anyCheckbox after dynamicCheckboxEvents called`);
   console.log(anyCheckbox);
+
+};
+
+/* ================================================
+    Display Stocks in Table Method for findByName
+   ================================================ */
+
+// ****** we need to do 3rd party API calls for innerHTML
+
+// needed to make method async and put an await on jess.findAll in order for FOR loop based on stocksDbArr.length to work
+const displayStocksByName = async () => {
+  const stocksJSON = localStorage.getItem("stocks");
+  const stocksLocalArr = JSON.parse(stocksJSON);
+
+  const stocksDbArr = await jess.findByName(symbol.value);
+
+  /*
+  LOCAL STORAGE CONTENT
+img: "https://static2.finnhub.io..."
+price: 108.55
+symbol: "goog"
+ */
+  console.log(`stocksLocalArr`);
+  console.log(stocksLocalArr);
+
+  /*
+  DATABASE CONTENT
+name: "S"
+targetPrice: 23.9201
+ */
+  console.log(`stocksDbArr`);
+  console.log(stocksDbArr);
+
+  // loop iterates through array of stocks returned from database
+  for (let i = 0; i < stocksDbArr.length; i++) {
+    let stocksDbName = stocksDbArr[i].name;
+    let stocksDbTargetPrice = stocksDbArr[i].targetPrice;
+
+    let apiStockLogoUrlRequest =
+      "https://finnhub.io/api/v1/stock/profile2?symbol=" +
+      stocksDbName +
+      "&token=cb85mnqad3i6lui0sl0g";
+    let apiStockLogoUrlResponse = await fetch(apiStockLogoUrlRequest);
+
+    let apiStockLogoUrl = await apiStockLogoUrlResponse.json();
+
+    let apiStockQuoteUrlRequest =
+      "https://finnhub.io/api/v1/quote?symbol=" +
+      stocksDbName +
+      "&token=cb85mnqad3i6lui0sl0g";
+    let apiStockQuoteUrlResponse = await fetch(apiStockQuoteUrlRequest);
+
+    let apiStockQuoteUrl = await apiStockQuoteUrlResponse.json();
+
+    console.log(`apiStockLogoUrl`);
+    console.log(apiStockLogoUrl);
+
+    console.log(`apiStockQuoteUrl`);
+    console.log(apiStockQuoteUrl);
+
+    let newRow = document.createElement("tr");
+    newRow.setAttribute("id", i);
+    newRow.innerHTML += `
+        <th scope="row">
+          <div class="form-check">
+            <input class="form-check-input body-row-checkbox" type="checkbox" value="" id="flexCheckDefault">
+          </div>
+        </th>
+        <td><img class="img-thumbnail" src="${apiStockLogoUrl.logo}" style="height: 50px;"></td>
+        <td>${stocksDbName}</td>
+        <td>${stocksDbTargetPrice}</td>
+        
+        <td>${apiStockQuoteUrl.c}</td> <!-- get from 3rd party API-->
+        
+        <td>quantity</td> <!-- get from our API-->`;
+    listItem.appendChild(newRow);
+  }
+
+  // create event listeners
+  setTimeout(() => {
+    dynamicCheckboxEvents();
+  }, 3000);
+
+  console.log(`anyCheckbox called within findByName`);
+  console.log(anyCheckbox);
+
 };
 
 /* ================================================ */
@@ -158,12 +244,9 @@ const makeRequest2 = async () => {
   return usersJson;
 };
 
-
 /* ================================================
-    POST Stocks
+    Post Stocks
    ================================================ */
-
-   // TO DO: Must deactivate POST button until valid ticker symbol is provided
 
 const postStocks = async () => {
   let apiStockLogo = await makeRequest1();
@@ -197,8 +280,7 @@ const postStocks = async () => {
 
   // delay so DB has time to update before it's queried to have its contents printed to the screen
   setTimeout(() => {
-    // displayStocksType = "getAll";
-    displayStocks("getAll");
+    displayStocks();
   }, 1000);
 
   symbol.value = "";
@@ -234,9 +316,8 @@ postBtn.addEventListener("click", function (event) {
   refreshCheckboxes();
 });
 
-
 /* ================================================
-    PUT Stocks
+    Put Stocks
    ================================================ */
 
 const putStocks = async () => {
@@ -254,8 +335,7 @@ const putStocks = async () => {
 
   // delayed >>> explain why delayed <<<
   setTimeout(() => {
-    // displayStocksType = "getAll";
-    displayStocks("getAll");
+    displayStocks();
   }, 1000);
 };
 
@@ -288,9 +368,8 @@ putBtn.addEventListener("click", function (event) {
   refreshCheckboxes();
 });
 
-
 /* ================================================
-   GET All
+   Get All
    ================================================ */
 
 const getAllStocks = async () => {
@@ -298,9 +377,9 @@ const getAllStocks = async () => {
 
   // use our function instead of renderListFromLocal();
   listItem.innerHTML = "";
-  // displayStocksType = "getAll";
+
   // no delay required
-  displayStocks("getAll");
+  displayStocks();
 };
 
 // ================================================
@@ -332,9 +411,8 @@ getAllBtn.addEventListener("click", function (event) {
   refreshCheckboxes();
 });
 
-
 /* ================================================
-    GET Stocks by Name
+    Get Stocks by Name
    ================================================ */
 
 // a lot of the code in this method can be removed
@@ -345,10 +423,9 @@ const getByNameStocks = async () => {
 
   // use our function instead of renderListFromLocal();
   listItem.innerHTML = "";
-  // displayStocksType = "getByName";
+
   // normal
-  // displayStocksByName();
-  displayStocks("getByName");
+  displayStocksByName();
 };
 
 // ================================================
@@ -384,19 +461,23 @@ getByNameBtn.addEventListener("click", function (event) {
   refreshCheckboxes();
 });
 
-
 /* ================================================
-    Update Checkbox Statuses Object
+    Delete by Checkbox
    ================================================ */
 
-// function getCheckboxStatuses(){
-const getCheckboxStatuses = async () => {
-  // get a list of everything in the DB
+const deleteStocksByCheckbox = async () => {
+  // iterating checkboxes
   let stocksDbArr = await jess.findAll();
+  // let stocksDbArr = await jess.findByName(symbol.value);
+  //   console.log(`stocksDbArr`);
+  //   console.log(stocksDbArr);
   let highestDbId = stocksDbArr[stocksDbArr.length - 1].id;
   let dbItemCount = 0;
   let checkboxToQuery = 0;
   let checkboxStatus = 0;
+
+  // Do we need an object to hold the checkboxes' status?
+  let checkedBoxesObj = {};
 
   console.log(`highestDbId = ${highestDbId}`);
 
@@ -408,26 +489,17 @@ const getCheckboxStatuses = async () => {
     checkboxStatus = document.querySelector(checkboxToQuery);
 
     console.log(`checkboxStatus = ${checkboxStatus}`);
-    // removed .checked from checkboxStatus and delete works
 
-    // do we need to check if the checkboxstatus is also not empty?
     if (checkboxStatus != null) {
       checkedBoxesObj[i] = checkboxStatus.checked;
-    }    
+    }
   }
-  console.log("Checked box obj");
-  console.log(checkedBoxesObj);
+
   console.log(`dbItemCount = ${dbItemCount}`);
-};
 
+  console.log(`checkedBoxesObj`);
+  console.log(checkedBoxesObj);
 
-/* ================================================
-    Delete by Checkbox
-   ================================================ */
-
-   // TO DO: the system currently only deletes items whose checkboxes have been selected one at a time
-
-function deleteStocksByCheckbox() {
   for (let [key, value] of Object.entries(checkedBoxesObj)) {
     console.log(`key, value = ${key}, ${value}`);
 
@@ -436,15 +508,17 @@ function deleteStocksByCheckbox() {
     }
   }
 
-  // is listItem needed
+  // // use our function instead of renderListFromLocal();
   listItem.innerHTML = "";
 
   // delayed
   setTimeout(() => {
-    // displayStocksType = "getAll";
-    displayStocks("getAll");
+    displayStocks();
   }, 2000);
-}
+
+  // doing await instead of delay
+  // await displayStocks();
+};
 
 // ================================================
 deleteBtn.addEventListener("click", function (event) {
@@ -463,11 +537,6 @@ deleteBtn.addEventListener("click", function (event) {
   // make sure header row checkbox reflects what's checked in table
   refreshCheckboxes();
 });
-
-
-/* ================================================
-    Update Header Row Checkbox Status
-   ================================================ */
 
 function refreshCheckboxes() {
   let checkboxesNodeList = document.querySelectorAll('input[type="checkbox"]');
@@ -504,16 +573,9 @@ function refreshCheckboxes() {
   } else {
     headerRowCheckbox.checked = false;
     headerRowCheckbox.indeterminate = true;
-    console.log(
-      `numOfCheckedBoxes between 0 and max SO headerRowCheckbox.indeterminate = true`
-    );
+    console.log(`numOfCheckedBoxes between 0 and max SO headerRowCheckbox.indeterminate = true`);
   }
 }
-
-
-/* ================================================
-    Toggle All Checkboxes
-   ================================================ */
 
 // changing all checkboxes to match the state of the main checkbox
 function selectAllToggle() {
@@ -537,13 +599,9 @@ function selectAllToggle() {
   }
 }
 
+// [Explainer] this function is making event listeners for all of the dynamically generated checkboxes that are created as the table of stocks is rendered 
+function dynamicCheckboxEvents(){
 
-/* ================================================
-    Create Event Listeners for All Checkboxes Generated
-   ================================================ */
-
-// [Explainer] this function is making event listeners for all of the dynamically generated checkboxes that are created as the table of stocks is rendered
-function dynamicCheckboxEvents() {
   // anyCheckbox is updated one last time to make sure all rows in the table have had the opportunity to be drawn
   anyCheckbox = document.querySelectorAll(".body-row-checkbox");
 
@@ -554,22 +612,19 @@ function dynamicCheckboxEvents() {
   console.log(anyCheckbox);
 
   anyCheckbox.forEach((box) => {
-    console.log("anyCheckbox.forEach RUNNING");
 
+    console.log("anyCheckbox.forEach RUNNING");  
+    
     box.addEventListener("click", function handleClick(event) {
       console.log("box clicked", event);
-
-      // This code comes from getCheckboxStatuses
-      getCheckboxStatuses();
-      console.log(`checkedBoxesObj`);
-      console.log(checkedBoxesObj);
-
+  
       // calling refreshCheckboxes to assure header row checkbox is correctly checked
       setTimeout(() => {
         refreshCheckboxes();
       }, 1000);
     });
   });
+
 }
 
 headerRowCheckbox.addEventListener("click", function (event) {
