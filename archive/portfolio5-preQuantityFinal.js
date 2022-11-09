@@ -7,7 +7,7 @@
 
 // 2> using get all on an empty DB breaks the system, case must be prevented
 
-import { StocksController } from "./stocksController.js";
+import { StocksController } from "../js/stocksController.js";
 
 const jess = new StocksController();
 
@@ -26,11 +26,13 @@ let anyCheckbox = document.querySelectorAll(".body-row-checkbox");
 let symbol = "Default symbol";
 let price = "Default price";
 let quantity = "Default quantity";
+let holdingId = "Default holding ID";
 let apiStockLogoUrl = "Default API Logo";
 let apiStockQuoteUrl = "Default API Quote";
 
 // object to hold ids of table rows with checked/unchecked boxes
 let checkedBoxesObj = {};
+
 
 /* ================================================
     Display Stocks in Table Method
@@ -78,7 +80,6 @@ targetPrice: 23.9201
     let stocksDbId = stocksDbArr[i].id;
     let stocksDbName = stocksDbArr[i].name;
     let stocksDbTargetPrice = stocksDbArr[i].targetPrice;
-    let stocksDbPurchaseQuantity = stocksDbArr[i].purchaseQuantity;
 
     let apiStockLogoUrlRequest =
       "https://finnhub.io/api/v1/stock/profile2?symbol=" +
@@ -110,7 +111,7 @@ targetPrice: 23.9201
 
         <td>${apiStockQuoteUrl.c}</td> <!-- get from 3rd party API-->
 
-        <td>${stocksDbPurchaseQuantity}</td> <!-- get from our API/DB-->`;
+        <td>Quantity</td> <!-- get from our API/DB-->`;
     listItem.appendChild(newRow);
   }
 
@@ -157,11 +158,12 @@ const makeRequest2 = async () => {
   return usersJson;
 };
 
+
 /* ================================================
     POST Stocks
    ================================================ */
 
-// TO DO: Must deactivate POST button until valid ticker symbol is provided
+   // TO DO: Must deactivate POST button until valid ticker symbol is provided
 
 const postStocks = async () => {
   let apiStockLogo = await makeRequest1();
@@ -185,11 +187,7 @@ const postStocks = async () => {
   let stockSaveObj = {
     name: symbol.value.toUpperCase(),
     targetPrice: price.value, // get from UI
-    purchaseQuantity: quantity.value, // get from UI
   };
-
-  console.log("quantity.value");
-  console.log(quantity.value);
 
   // 4> putting object in Heroku DB
   jess.save(stockSaveObj);
@@ -204,27 +202,65 @@ const postStocks = async () => {
   }, 1000);
 
   symbol.value = "";
-  price.value = ""; // *** Why's there an error here? ***
-  quantity.value = "";
+  price.value = "";
 };
 
 // ================================================
 postBtn.addEventListener("click", function (event) {
   event.preventDefault(); // related to action.php in stock-form.html?+++++++++++
+   
+  symbol = document.getElementById("symbol");
+  price = document.getElementById("price");
+  quantity = document.getElementById("quantity");
+  holdingId = document.getElementById("holdingId");
 
-  // Capture DOM variables before completing function
-  apiCallStockQuoteLogo();
+  let apiSymbol = symbol.value.toUpperCase();
+  console.log(apiSymbol);
 
+  apiStockLogoUrl =
+    "https://finnhub.io/api/v1/stock/profile2?symbol=" +
+    apiSymbol +
+    "&token=cb85mnqad3i6lui0sl0g";
+
+  apiStockQuoteUrl =
+    "https://finnhub.io/api/v1/quote?symbol=" +
+    apiSymbol +
+    "&token=cb85mnqad3i6lui0sl0g";
+
+  // THIS IS WHERE WE CALL postStocks
   postStocks();
-  
+
+  // make sure header row checkbox reflects what's checked in table
   refreshCheckboxes();
 });
+
 
 /* ================================================
     PUT Stocks
    ================================================ */
 
+// const putStocksOld = async () => {
+//   let stockUpdateObj = {
+//     id: holdingId.value, // no longer used
+//     name: symbol.value.toUpperCase(),
+//     targetPrice: price.value,
+//   };
+
+//   // update entry by id
+//   jess.update(stockUpdateObj);
+
+//   // use our function instead of renderListFromLocal();
+//   listItem.innerHTML = "";
+
+//   // delayed >>> explain why delayed <<<
+//   setTimeout(() => {
+//     // displayStocksType = "getAll";
+//     displayStocks("getAll");
+//   }, 1000);
+// };
+
 const putStocks = async () => {
+
   let stockUpdateObj = {};
 
   for (let [key, value] of Object.entries(checkedBoxesObj)) {
@@ -233,7 +269,6 @@ const putStocks = async () => {
     stockUpdateObj = {
       id: key,
       targetPrice: price.value, // get from UI
-      purchaseQuantity: quantity.value, // get from UI
     };
 
     if (value) {
@@ -252,19 +287,38 @@ const putStocks = async () => {
 
   // reset the checkedBoxesObj
   checkedBoxesObj = {};
+  
 };
 
 // ================================================
 putBtn.addEventListener("click", function (event) {
   event.preventDefault(); // related to action.php in stock-form.html?+++++++++++
 
-  // Capture DOM variables before completing function
-  apiCallStockQuoteLogo();
-  
+  symbol = document.getElementById("symbol");
+  price = document.getElementById("price");
+  quantity = document.getElementById("quantity");
+  holdingId = document.getElementById("holdingId");
+
+  let apiSymbol = symbol.value.toUpperCase();
+  console.log(apiSymbol);
+
+  apiStockLogoUrl =
+    "https://finnhub.io/api/v1/stock/profile2?symbol=" +
+    apiSymbol +
+    "&token=cb85mnqad3i6lui0sl0g";
+
+  apiStockQuoteUrl =
+    "https://finnhub.io/api/v1/quote?symbol=" +
+    apiSymbol +
+    "&token=cb85mnqad3i6lui0sl0g";
+
+  // THIS IS WHERE WE CALL postStocks
   putStocks();
-  
+
+  // make sure header row checkbox reflects what's checked in table
   refreshCheckboxes();
 });
+
 
 /* ================================================
    GET All
@@ -284,13 +338,31 @@ const getAllStocks = async () => {
 getAllBtn.addEventListener("click", function (event) {
   event.preventDefault(); // related to action.php in stock-form.html?+++++++++++
 
-  // Capture DOM variables before completing function
-  apiCallStockQuoteLogo();
+  symbol = document.getElementById("symbol");
+  price = document.getElementById("price");
+  quantity = document.getElementById("quantity");
+  holdingId = document.getElementById("holdingId");
 
+  let apiSymbol = symbol.value.toUpperCase();
+  console.log(apiSymbol);
+
+  apiStockLogoUrl =
+    "https://finnhub.io/api/v1/stock/profile2?symbol=" +
+    apiSymbol +
+    "&token=cb85mnqad3i6lui0sl0g";
+
+  apiStockQuoteUrl =
+    "https://finnhub.io/api/v1/quote?symbol=" +
+    apiSymbol +
+    "&token=cb85mnqad3i6lui0sl0g";
+
+  // THIS IS WHERE WE CALL getAllStocks
   getAllStocks();
-  
+
+  // make sure header row checkbox reflects what's checked in table
   refreshCheckboxes();
 });
+
 
 /* ================================================
     GET Stocks by Name
@@ -314,23 +386,10 @@ const getByNameStocks = async () => {
 getByNameBtn.addEventListener("click", function (event) {
   event.preventDefault(); // related to action.php in stock-form.html?+++++++++++
 
-  // Capture DOM variables before completing function
-  apiCallStockQuoteLogo();
-
-  getByNameStocks();
-
-  refreshCheckboxes();
-});
-
-/* ================================================
-    API Call for Stock Logo & Quote
-   ================================================ */
-
-function apiCallStockQuoteLogo() {
-  
   symbol = document.getElementById("symbol");
   price = document.getElementById("price");
   quantity = document.getElementById("quantity");
+  holdingId = document.getElementById("holdingId");
 
   let apiSymbol = symbol.value.toUpperCase();
   console.log(apiSymbol);
@@ -345,7 +404,17 @@ function apiCallStockQuoteLogo() {
     apiSymbol +
     "&token=cb85mnqad3i6lui0sl0g";
 
-}
+  // THIS IS WHERE WE CALL postStocks
+  getByNameStocks();
+
+  // make sure header row checkbox is correctly checked
+  // setTimeout(() => {
+  //   refreshCheckboxes();
+  // }, 1500);
+
+  refreshCheckboxes();
+});
+
 
 /* ================================================
     Update Checkbox Statuses Object
@@ -375,12 +444,13 @@ const getCheckboxStatuses = async () => {
     // do we need to check if the checkboxstatus is also not empty?
     if (checkboxStatus != null) {
       checkedBoxesObj[i] = checkboxStatus.checked;
-    }
+    }    
   }
   console.log("Checked box obj");
   console.log(checkedBoxesObj);
   console.log(`dbItemCount = ${dbItemCount}`);
 };
+
 
 /* ================================================
     Delete by Checkbox
@@ -408,12 +478,21 @@ function deleteStocksByCheckbox() {
 // ================================================
 deleteBtn.addEventListener("click", function (event) {
   event.preventDefault(); // related to action.php in stock-form.html?+++++++++++
-  
-  deleteStocksByCheckbox();
-  
-  refreshCheckboxes();
 
+  symbol = document.getElementById("symbol");
+  price = document.getElementById("price");
+  quantity = document.getElementById("quantity");
+  holdingId = document.getElementById("holdingId");
+
+  // THIS IS WHERE WE CALL deleteStocks
+  console.log("DELETE BUTTON PUSHED");
+
+  deleteStocksByCheckbox();
+
+  // make sure header row checkbox reflects what's checked in table
+  refreshCheckboxes();
 });
+
 
 /* ================================================
     Update Header Row Checkbox Status
@@ -460,6 +539,7 @@ function refreshCheckboxes() {
   }
 }
 
+
 /* ================================================
     Toggle All Checkboxes
    ================================================ */
@@ -485,6 +565,7 @@ function selectAllToggle() {
     }
   }
 }
+
 
 /* ================================================
     Create Event Listeners for All Checkboxes Generated
@@ -529,4 +610,5 @@ headerRowCheckbox.addEventListener("click", function (event) {
   }, 1000);
 
   getCheckboxStatuses();
+
 });
