@@ -74,9 +74,9 @@ class StocksController {
   // }
   // }
 
-  // POST (added purchaseQuantity)
-  save({ name, targetPrice, purchaseQuantity }) {
-    const data = { name, targetPrice, purchaseQuantity };
+  // POST
+  save({ name, targetPrice }) {
+    const data = { name, targetPrice };
 
     fetch("https://peaceful-ocean-58466.herokuapp.com/holding/add", {
       method: "POST", // or 'PUT'
@@ -116,11 +116,12 @@ class StocksController {
 
 /* ================================================
       PUT
+      Our next area of focus once our API is upgraded
      ================================================ */
 
-// PUT  (added purchaseQuantity)
-update({ id, name, targetPrice, purchaseQuantity }) {
-  const data = { id, name, targetPrice, purchaseQuantity };
+// PUT
+update({ id, name, targetPrice }) {
+  const data = { id, name, targetPrice };
   let fetchURL = "https://peaceful-ocean-58466.herokuapp.com/holding/" + id;
 
   fetch(fetchURL, {
